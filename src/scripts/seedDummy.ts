@@ -389,5 +389,8 @@ export async function seedDummy() {
 }
 
 if (process.argv.some((arg) => arg.includes('seedDummy.ts'))) {
-  await seedDummy()
+  seedDummy().catch((error) => {
+    console.error('Dummy seed failed', error)
+    process.exitCode = 1
+  })
 }
