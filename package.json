@@ -16,7 +16,8 @@
     "start": "next start",
     "lint": "next lint",
     "prettier:fix": "prettier --write .",
-    "migrate-lexical-script": "payload run ./src/migrate.ts"
+    "migrate-lexical-script": "payload run ./src/migrate.ts",
+    "seed:dummy": "payload run src/scripts/seedDummy.ts"
   },
   "dependencies": {
     "@docsearch/react": "^3.9.0",

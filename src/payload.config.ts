@@ -83,6 +83,7 @@ import { PartnerProgram } from './globals/PartnerProgram'
 import { TopBar } from './globals/TopBar'
 import { opsCounterPlugin } from './plugins/opsCounter'
 import redeployWebsite from './scripts/redeployWebsite'
+import { seedDummy } from './scripts/seedDummy'
 import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
 
 const filename = fileURLToPath(import.meta.url)
@@ -387,6 +388,19 @@ export default buildConfig({
       handler: refreshMdxToLexical,
       method: 'get',
       path: '/refresh/mdx-to-lexical',
+    },
+    {
+      handler: async (req) => {
+        if (!req.user?.roles?.includes('admin')) {
+          return Response.json({ message: 'Unauthorized' }, { status: 401 })
+        }
+
+        await seedDummy()
+
+        return Response.json({ message: 'Dummy seed completed' })
+      },
+      method: 'post',
+      path: '/seed/dummy',
     },
   ],
   globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
