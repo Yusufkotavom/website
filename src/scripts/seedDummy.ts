@@ -1,6 +1,5 @@
 import config from '@payload-config'
 /* eslint-disable no-console */
-import path from 'path'
 import { getPayload } from 'payload'
 
 type ID = number | string
@@ -77,25 +76,11 @@ async function ensureFilter(payload, collection: string, name: string, value: st
   return created.id
 }
 
-async function ensureMedia(payload): Promise<ID> {
-  const alt = 'Seed placeholder image'
-  const existing = await findOneByField(payload, 'media', 'alt', alt)
-
-  if (existing) {
-    return existing.id
-  }
-
-  const created = await payload.create({
-    collection: 'media',
-    data: {
-      alt,
-    },
-    filePath: path.resolve(process.cwd(), 'public/images/dot.png'),
-    overrideAccess: true,
-  })
-
-  return created.id
-}
+const canPersistUploads = Boolean(
+  process.env.BLOB_STORAGE_ENABLED &&
+    process.env.BLOB_READ_WRITE_TOKEN &&
+    process.env.BLOB_STORE_ID,
+)
 
 async function ensureAdminUser(payload): Promise<ID> {
   const email = process.env.SEED_ADMIN_EMAIL || 'admin@example.com'
@@ -272,6 +257,32 @@ async function ensureCaseStudy(payload, mediaID: ID, partnerID?: ID): Promise<ID
   return created.id
 }
 
+async function removeBySlug(payload, collection: string, slug: string): Promise<void> {
+  const existing = await findOneByField(payload, collection, 'slug', slug)
+
+  if (existing) {
+    await payload.delete({
+      id: existing.id,
+      collection,
+      overrideAccess: true,
+    })
+  }
+}
+
+async function cleanupUploadDependentSeedDocs(payload): Promise<void> {
+  await removeBySlug(payload, 'case-studies', 'seed-case-study')
+  await removeBySlug(payload, 'partners', 'seed-partner')
+
+  const seedMedia = await findOneByField(payload, 'media', 'alt', 'Seed placeholder image')
+  if (seedMedia) {
+    await payload.delete({
+      id: seedMedia.id,
+      collection: 'media',
+      overrideAccess: true,
+    })
+  }
+}
+
 async function ensurePartner(
   payload,
   params: {
@@ -364,26 +375,57 @@ export async function seedDummy() {
   const regions = [await ensureFilter(payload, 'regions', 'North America', 'north-america')]
   const budgets = [await ensureFilter(payload, 'budgets', '$10k - $50k', '10k-50k')]
 
-  const mediaID = await ensureMedia(payload)
   const adminID = await ensureAdminUser(payload)
   const categoryID = await ensureCategory(payload)
-
-  const caseStudyID = await ensureCaseStudy(payload, mediaID)
-  const partnerID = await ensurePartner(payload, {
-    budgets,
-    caseStudyID,
-    industries,
-    mediaID,
-    regions,
-    specialties,
-  })
-
-  await ensureCaseStudy(payload, mediaID, partnerID)
   await ensurePost(payload, { authorID: adminID, categoryID })
   await ensureReusableContent(payload)
   const docID = await ensureDocs(payload)
   await ensureCommunityHelp(payload, docID)
   await ensureHomePage(payload)
+
+  if (canPersistUploads) {
+    const existingSeedMedia = await findOneByField(
+      payload,
+      'media',
+      'alt',
+      'Seed placeholder image',
+    )
+    const mediaID = existingSeedMedia
+      ? existingSeedMedia.id
+      : (
+          await payload.create({
+            collection: 'media',
+            data: {
+              alt: 'Seed placeholder image',
+            },
+            file: {
+              name: 'seed-placeholder.png',
+              data: Buffer.from(
+                'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO7+N8EAAAAASUVORK5CYII=',
+                'base64',
+              ),
+              mimetype: 'image/png',
+              size: 68,
+            },
+            overrideAccess: true,
+          })
+        ).id
+
+    const caseStudyID = await ensureCaseStudy(payload, mediaID)
+    const partnerID = await ensurePartner(payload, {
+      budgets,
+      caseStudyID,
+      industries,
+      mediaID,
+      regions,
+      specialties,
+    })
+
+    await ensureCaseStudy(payload, mediaID, partnerID)
+  } else {
+    await cleanupUploadDependentSeedDocs(payload)
+    console.log('Skipping upload-dependent seed docs because blob storage is not configured.')
+  }
 
   console.log('Dummy seed complete ✅')
 }

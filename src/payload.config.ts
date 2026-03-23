@@ -394,10 +394,16 @@ export default buildConfig({
         if (!req.user?.roles?.includes('admin')) {
           return Response.json({ message: 'Unauthorized' }, { status: 401 })
         }
-
-        await seedDummy()
-
-        return Response.json({ message: 'Dummy seed completed' })
+        try {
+          await seedDummy()
+          return Response.json({ message: 'Dummy seed completed' })
+        } catch (error) {
+          req.payload.logger.error(error)
+          return Response.json(
+            { message: error instanceof Error ? error.message : 'Failed to seed dummy data' },
+            { status: 500 },
+          )
+        }
       },
       method: 'post',
       path: '/seed/dummy',
