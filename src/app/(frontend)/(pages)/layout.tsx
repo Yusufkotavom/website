@@ -1,5 +1,6 @@
 import { Footer } from '@components/Footer/index'
 import { Header } from '@components/Header/index'
+import { WhatsAppFloating } from '@components/WhatsAppFloating'
 import { fetchGlobals } from '@data/index'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -20,6 +21,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <Header {...mainMenu} topBar={topBar} />
       <div>
         {children}
+        <WhatsAppFloating {...topBar} />
         <div id="docsearch" />
         <Footer {...footer} />
       </div>
