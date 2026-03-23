@@ -38,8 +38,10 @@ export const WhatsAppFloating: React.FC<Props> = ({
   }
 
   const formattedMessage = whatsappMessage
-    .replaceAll('{{lokasi}}', pathname)
-    .replaceAll('{{type}}', currentPageType)
+    .split('{{lokasi}}')
+    .join(pathname)
+    .split('{{type}}')
+    .join(currentPageType)
 
   const whatsappURL = `https://wa.me/${normalizePhoneNumber(whatsappNumber)}?text=${encodeURIComponent(formattedMessage)}`
 
