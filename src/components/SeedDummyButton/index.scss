@@ -1,0 +1,22 @@
+.seed-dummy-button {
+  all: unset;
+  background-color: var(--theme-success-500);
+  border-radius: 4px;
+  color: var(--theme-success-1000);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 600;
+  justify-content: center;
+  margin-top: 8px;
+  padding: 8px 10px;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}

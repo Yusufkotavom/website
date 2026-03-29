@@ -2,6 +2,7 @@
 
 import RedeployButton from '@components/RedeployButton'
 import RefreshMdxToLexicalButton from '@components/RefreshMdxToLexicalButton'
+import SeedDummyButton from '@components/SeedDummyButton'
 import SyncCommunityHelp from '@components/SyncCommunityHelp'
 import SyncDocsButton from '@components/SyncDocsButton'
 import SyncToAlgolia from '@components/SyncToAlgolia'
@@ -17,6 +18,7 @@ const AfterNavActions: React.FC = () => {
       <span className={`${baseClass}__group-title`}>Admin Actions</span>
       <SyncDocsButton />
       <RefreshMdxToLexicalButton />
+      <SeedDummyButton />
       <RedeployButton />
       <SyncToAlgolia />
     </div>
