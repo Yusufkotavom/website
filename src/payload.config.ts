@@ -1,4 +1,5 @@
 import { revalidateRedirects } from '@hooks/revalidateRedirects'
+import { mcpPlugin } from '@payloadcms/plugin-mcp'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
@@ -608,6 +609,16 @@ export default buildConfig({
       },
       enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+    mcpPlugin({
+      mcp: {
+        serverOptions: {
+          serverInfo: {
+            name: 'Payload MCP Server',
+            version: '1.0.0',
+          },
+        },
+      },
     }),
   ],
   secret: process.env.PAYLOAD_SECRET || '',

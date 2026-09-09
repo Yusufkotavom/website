@@ -48,8 +48,21 @@ const blobStore = process.env.BLOB_STORE_ID
 
 const nextConfig = withBundleAnalyzer({
   reactStrictMode: true,
+  output: 'standalone',
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year,
+    qualities: [75, 90],
+    localPatterns: [
+      {
+        pathname: '/api/og',
+      },
+      {
+        pathname: '/api/*',
+      },
+      {
+        pathname: '/media/**',
+      },
+    ],
     remotePatterns: [
       ...localhost,
       {
