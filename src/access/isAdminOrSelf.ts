@@ -2,7 +2,7 @@ import type { Access, FieldAccess } from 'payload'
 
 export const isAdminOrSelf: Access = ({ req: { user } }) => {
   // Need to be logged in
-  if (user) {
+  if (user && 'roles' in user) {
     // If user has role of 'admin'
     if (user.roles?.includes('admin')) {
       return true
@@ -16,17 +16,19 @@ export const isAdminOrSelf: Access = ({ req: { user } }) => {
     }
   }
 
-  // Reject everyone else
+  // Reject everyone else (termasuk PayloadMcpApiKey yang tidak punya roles)
   return false
 }
 
 export const isAdminOrSelfFieldLevel: FieldAccess = ({ id, req: { user } }) => {
   // Return true or false based on if the user has an admin role
-  if (user?.roles?.includes('admin')) {
-    return true
-  }
-  if (user?.id === id) {
-    return true
+  if (user && 'roles' in user) {
+    if (user.roles?.includes('admin')) {
+      return true
+    }
+    if (user.id === id) {
+      return true
+    }
   }
   return false
 }
