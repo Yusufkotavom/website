@@ -11,6 +11,11 @@ import React from 'react'
 
 import { CaseStudy } from './client_page'
 
+// Case studies are CMS content authored via the admin panel — render dynamically
+// (per-request SSR) so new entries appear without a full rebuild, and so the
+// production build does not require case-studies rows to exist in the DB.
+export const dynamic = 'force-dynamic'
+
 const getCaseStudy = (slug, draft) =>
   draft ? fetchCaseStudy(slug) : unstable_cache(fetchCaseStudy, [`case-study-${slug}`])(slug)
 
