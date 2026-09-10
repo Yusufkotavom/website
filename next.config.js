@@ -62,6 +62,9 @@ const nextConfig = withBundleAnalyzer({
       {
         pathname: '/media/**',
       },
+      {
+        pathname: '/images/**',
+      },
     ],
     remotePatterns: [
       ...localhost,
