@@ -1,412 +1,392 @@
 import React from 'react'
 
+import { Reveal } from './Reveal'
 import classes from './index.module.scss'
 
-const WA = 'https://wa.me/6285799520350?text=' +
-  encodeURIComponent('Halo, saya ingin konsultasi tentang layanan Kotacom')
-
-/* ----------------------------- inline icon set (no emoji) ----------------------------- */
-
-type IconProps = { className?: string }
-
-const IconGlobe = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M3 12h18M12 3c2.5 2.6 2.5 15.4 0 18M12 3c-2.5 2.6-2.5 15.4 0 18" />
-  </svg>
+const WA_TEXT = encodeURIComponent(
+  'Halo Kotacom, saya ingin konsultasi mengenai kebutuhan digital bisnis saya.',
 )
+const WA = `https://wa.me/6285799520350?text=${WA_TEXT}`
 
-const IconCpu = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="7" y="7" width="10" height="10" rx="2" />
-    <rect x="3.5" y="3.5" width="17" height="17" rx="3" />
-    <path d="M10 1.5v2M14 1.5v2M10 20.5v2M14 20.5v2M1.5 10h2M1.5 14h2M20.5 10h2M20.5 14h2" />
-  </svg>
-)
-
-const IconShield = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M12 2.5l7.5 3v6c0 4.4-3 8.3-7.5 9.5-4.5-1.2-7.5-5.1-7.5-9.5v-6z" />
-    <path d="M9 12l2.2 2.2L15.5 10" />
-  </svg>
-)
-
-const IconPrinter = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M7 9V3h10v6" />
-    <rect x="3.5" y="9" width="17" height="8" rx="2" />
-    <path d="M7 14h10v7H7z" />
-  </svg>
-)
-
-const IconArrow = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M5 12h13M13 6.5l5.5 5.5-5.5 5.5" />
-  </svg>
-)
-
-const IconPlus = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true">
-    <path d="M12 5.5v13M5.5 12h13" />
-  </svg>
-)
-
-const IconWhatsapp = ({ className }: IconProps) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.94.54 3.75 1.5 5.29L2 22l5.02-1.66a9.85 9.85 0 004.99 1.34c5.44 0 9.84-4.4 9.84-9.84S17.48 2 12.04 2zm5.7 13.9c-.24.68-1.4 1.3-1.93 1.35-.53.05-1.02.24-3.44-.72-2.9-1.16-4.72-4.15-4.86-4.34-.14-.2-1.15-1.55-1.1-2.94.05-1.4.77-2.07 1.04-2.36.27-.29.58-.34.78-.34h.55c.18 0 .42-.02.64.5.24.58.8 2 .87 2.14.07.15.11.32.01.5-.1.2-.2.31-.39.53-.19.22-.3.32-.44.53-.14.2-.3.42-.13.72.17.3.76 1.25 1.63 2.03 1.12 1 2.06 1.31 2.36 1.46.3.15.48.13.66-.08.19-.2.75-.87.95-1.17.2-.3.4-.25.68-.15.28.1 1.75.83 2.05.98.3.15.5.22.58.35.07.13.07.76-.17 1.44z" />
-  </svg>
-)
-
-/* ----------------------------- data ----------------------------- */
-
-const NAV_LINKS = [
-  { label: 'Layanan', href: '/layanan' },
-  { label: 'Portfolio', href: '/projects' },
-  { label: 'Tentang', href: '/tentang' },
-  { label: 'Kontak', href: '/kontak' },
+const stats = [
+  { k: 'Sejak', v: '2008', s: 'Pengalaman 17+ tahun' },
+  { k: 'Proyek', v: '150+', s: 'Terkirim & terawat' },
+  { k: 'Basis', v: 'Surabaya', s: 'Melayani seluruh Indonesia' },
+  { k: 'Respon', v: '< 24 jam', s: 'Dukungan teknis aktif' },
 ]
 
-const SERVICES = [
+const services = [
   {
-    tag: 'Company profile · Landing · E-commerce',
-    title: 'Website Development',
-    desc: 'Website yang jelas, cepat, dan siap mendukung penjualan — dari profil perusahaan sampai toko online.',
-    points: ['Next.js', 'CMS', 'SEO'],
-    href: '/layanan',
-    icon: <IconGlobe className={classes.tileIcon} />,
-    span: 'lg' as const,
-    tone: 'blue' as const,
+    n: '01',
+    title: 'Website Profesional',
+    desc: 'Company profile, landing page, e-commerce, dan portal yang cepat, rapi, dan mudah dikelola.',
+    items: ['Next.js / Astro', 'SEO teknis', 'CMS terintegrasi', 'Core Web Vitals'],
   },
   {
-    tag: 'POS · Dashboard · ERP',
+    n: '02',
     title: 'Software Development',
-    desc: 'Sistem custom untuk proses bisnis yang tidak bisa diselesaikan template umum.',
-    points: ['Web App', 'Integrasi'],
-    href: '/layanan',
-    icon: <IconCpu className={classes.tileIcon} />,
-    span: 'sm' as const,
-    tone: 'violet' as const,
+    desc: 'Aplikasi custom untuk operasional bisnis — dari POS, inventory, sampai sistem internal.',
+    items: ['Web app & dashboard', 'Mobile (Flutter)', 'Integrasi API', 'Otomasi proses'],
   },
   {
-    tag: 'Maintenance · Jaringan · Keamanan',
+    n: '03',
     title: 'IT Support & Infrastruktur',
-    desc: 'Support teknis dan infrastruktur agar operasional tetap stabil setiap hari.',
-    points: ['Monitoring', 'Backup'],
-    href: '/layanan',
-    icon: <IconShield className={classes.tileIcon} />,
-    span: 'sm' as const,
-    tone: 'green' as const,
+    desc: 'Kelola server, jaringan, dan perangkat kantor supaya operasional tidak pernah berhenti.',
+    items: ['Setup & migrasi server', 'Jaringan & VPN', 'Monitoring', 'Backup terjadwal'],
   },
   {
-    tag: 'Buku · Brosur · Kemasan · Seminar kit',
-    title: 'Printing & Design',
-    desc: 'Percetakan dan materi promosi berkualitas yang membangun trust dan siap distribusi.',
-    points: ['Cetak buku', 'Offset', 'Digital'],
-    href: '/layanan',
-    icon: <IconPrinter className={classes.tileIcon} />,
-    span: 'wide' as const,
-    tone: 'warm' as const,
+    n: '04',
+    title: 'Percetakan & Branding',
+    desc: 'Cetak buku, kemasan, dan materi promosi dengan kontrol kualitas end-to-end.',
+    items: ['Offset & digital', 'Buku & katalog', 'Kemasan', 'Desain grafis'],
   },
 ]
 
-const STEPS = [
-  { n: '01', title: 'Pahami kebutuhan bisnis', desc: 'Kami mulai dari tujuan, hambatan operasional, dan target yang ingin dicapai.' },
-  { n: '02', title: 'Susun solusi yang realistis', desc: 'Setelah arahnya jelas, kami petakan prioritas, scope kerja, timeline, dan implementasi.' },
-  { n: '03', title: 'Eksekusi & pendampingan', desc: 'Pekerjaan tidak berhenti saat rilis — kami lanjutkan dengan support dan evaluasi.' },
+const steps = [
+  {
+    n: '01',
+    t: 'Pahami kebutuhan',
+    d: 'Kami petakan tujuan bisnis, alur kerja, dan kendala teknis sebelum menyentuh baris kode pertama.',
+  },
+  {
+    n: '02',
+    t: 'Susun solusi realistis',
+    d: 'Rencana kerja, arsitektur, dan estimasi yang jujur — tanpa fitur berlebihan yang tidak terpakai.',
+  },
+  {
+    n: '03',
+    t: 'Eksekusi & dampingi',
+    d: 'Bangun, uji, rilis, lalu dampingi operasional harian beserta dokumentasi dan pelatihan.',
+  },
 ]
 
-const TECH = [
-  'React', 'Next.js', 'Astro.js', 'Node.js', 'Laravel', 'Python',
-  'PostgreSQL', 'MongoDB', 'AWS', 'Google Cloud', 'Flutter', 'Docker',
+const tech = [
+  'TypeScript', 'Next.js', 'React', 'Node.js',
+  'PostgreSQL', 'MongoDB', 'Tailwind', 'Payload CMS',
+  'Docker', 'Linux', 'AWS', 'Cloudflare',
 ]
 
-const PROJECTS = [
-  { tag: 'Retail Fashion · 2025', title: 'Fashion Retail POS System Butik Cantik', desc: 'Sistem Point of Sales terintegrasi penuh untuk manajemen stok dan penjualan.', tone: 'blue' as const },
-  { tag: 'Manufacturing · 2025', title: 'IT Infrastructure Upgrade CV Maju Bersama', desc: 'Pembaruan infrastruktur IT menyeluruh untuk keamanan, stabilitas, dan performa jaringan.', tone: 'green' as const },
-  { tag: 'Koperasi · 2025', title: 'Sistem Manajemen Koperasi Digital', desc: 'Digitalisasi simpan pinjam, anggota, dan laporan keuangan koperasi.', tone: 'violet' as const },
+const projects = [
+  {
+    tag: 'Retail',
+    t: 'POS System — Butik Cantik',
+    d: 'Kasir, stok multi-outlet, dan laporan penjualan real-time untuk jaringan butik di Jawa Timur.',
+    m: ['Next.js', 'PostgreSQL', 'Prisma'],
+  },
+  {
+    tag: 'Infrastruktur',
+    t: 'IT Upgrade — CV Maju Bersama',
+    d: 'Migrasi server lama ke VPS terkelola, VPN kantor, dan backup otomatis harian.',
+    m: ['Linux', 'Docker', 'WireGuard'],
+  },
+  {
+    tag: 'Koperasi',
+    t: 'Koperasi Digital',
+    d: 'Simpan pinjam, anggota, dan pembukuan otomatis dengan alur persetujuan berjenjang.',
+    m: ['Laravel', 'MySQL', 'Redis'],
+  },
 ]
 
-const QUOTES = [
-  { text: 'Implementasinya rapi dan tepat waktu. Tim Kotacom paham kebutuhan operasional kami, bukan sekadar bikin aplikasi.', name: 'Butik Cantik', role: 'Retail Fashion' },
-  { text: 'Jaringan kantor jadi jauh lebih stabil. Support-nya responsif setiap kali kami butuh bantuan.', name: 'CV Maju Bersama', role: 'Manufacturing' },
-  { text: 'Sekarang laporan koperasi bisa kami lihat real-time. Pekerjaan manual berkurang drastis.', name: 'Koperasi Digital', role: 'Koperasi' },
+const quotes = [
+  {
+    q: 'Tim Kotacom paham kebutuhan operasional kami, bukan cuma tampilan. Sistemnya dipakai setiap hari tanpa drama.',
+    n: 'Rina Wijaya',
+    r: 'Owner, Butik Cantik',
+  },
+  {
+    q: 'Server kami akhirnya rapi dan terdokumentasi. Gangguan turun drastis setelah serah terima.',
+    n: 'Agus Santoso',
+    r: 'Direktur, CV Maju Bersama',
+  },
+  {
+    q: 'Prosesnya jelas dari awal. Estimasi sesuai, komunikasi enak, hasilnya bisa kami kelola sendiri.',
+    n: 'Dewi Kartika',
+    r: 'Manajer, Koperasi Sejahtera',
+  },
 ]
 
-const FAQ = [
-  { q: 'Berapa lama waktu pembuatan website?', a: 'Tergantung kompleksitas. Company profile umumnya 2–4 minggu; sistem custom dengan integrasi bisa 6–12 minggu. Kami berikan timeline jelas setelah sesi discovery.' },
-  { q: 'Apakah ada garansi untuk layanan IT support?', a: 'Ya. Setiap paket support mencakup garansi penanganan dan SLA respons yang disepakati, plus dokumentasi pekerjaan.' },
-  { q: 'Apakah Kotacom melayani klien di luar Surabaya?', a: 'Ya, basis kami di Surabaya namun jangkauan nasional. Pekerjaan bisa dilakukan remote maupun on-site sesuai kebutuhan.' },
-  { q: 'Berapa biaya pembuatan website dan software?', a: 'Biaya disesuaikan dengan scope. Kami susun penawaran realistis berdasarkan prioritas bisnis Anda — tanpa biaya tersembunyi.' },
-  { q: 'Apakah website yang dibuat mobile-friendly?', a: 'Semua website kami responsif dan dioptimalkan untuk mobile, tablet, maupun desktop.' },
-  { q: 'Apakah saya bisa update konten website sendiri?', a: 'Bisa. Kami sertakan CMS agar Anda mengelola konten kapan saja tanpa perlu developer.' },
+const faqs = [
+  {
+    q: 'Berapa lama proses pengerjaan website?',
+    a: 'Tergantung cakupan. Landing page sederhana biasanya 1–2 minggu, company profile 3–4 minggu, dan aplikasi custom 6–12 minggu termasuk pengujian.',
+  },
+  {
+    q: 'Apakah saya bisa mengelola konten sendiri?',
+    a: 'Bisa. Kami integrasikan CMS (Payload) sehingga tim Anda dapat mengubah halaman, artikel, dan gambar tanpa menyentuh kode.',
+  },
+  {
+    q: 'Bagaimana skema pembayarannya?',
+    a: 'Bertahap: 40% di awal sebagai komitmen, 40% saat proses rilis, dan 20% setelah serah terima serta pelatihan.',
+  },
+  {
+    q: 'Apakah termasuk dukungan setelah rilis?',
+    a: 'Ya. Ada masa garansi perbaikan bug 30 hari, dan tersedia paket dukungan bulanan untuk pemeliharaan serta monitoring.',
+  },
+  {
+    q: 'Apakah bisa menangani infrastruktur & server?',
+    a: 'Bisa. Kami mengelola VPS, jaringan kantor, VPN, backup, dan monitoring — all-in-one dengan pengembangan aplikasinya.',
+  },
+  {
+    q: 'Apakah melayani klien di luar Surabaya?',
+    a: 'Tentu. Basis kami di Surabaya, tetapi seluruh alur kerja bisa dilakukan remote via Google Meet, WhatsApp, dan repositori bersama.',
+  },
 ]
 
-/* ----------------------------- page ----------------------------- */
+const Arrow = () => (
+  <svg className={classes.arrow} viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+    <path d="M2 8h11M9 3.5 13.5 8 9 12.5" stroke="currentColor" strokeWidth="1.5" fill="none" />
+  </svg>
+)
 
-export const KotacomHome: React.FC = () => {
+const Plus = () => (
+  <svg className={classes.plus} viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+    <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth="1.5" fill="none" />
+  </svg>
+)
+
+export default function KotacomHome() {
   return (
-    <main className={classes.home}>
-      {/* ============================ HERO ============================ */}
-      <section className={classes.hero}>
-        <div className={classes.heroGlow} aria-hidden="true" />
-        <div className={classes.heroAurora} aria-hidden="true" />
-        <div className={classes.heroGrid} aria-hidden="true" />
-
-        <div className={classes.container}>
-          <span className={classes.badge}>
-            <span className={classes.dot} />
-            Mitra IT &amp; Percetakan sejak 2008
-          </span>
-
-          <h1 className={classes.title}>
-            Bangun fondasi digital bisnis yang <em className={classes.accent}>rapi, stabil</em>, dan siap tumbuh.
-          </h1>
-
-          <p className={classes.lead}>
-            Website, software development, IT support, hingga percetakan profesional.
-            Satu partner terpercaya — tanpa repot koordinasi antar vendor.
-          </p>
-
-          <div className={classes.actions}>
-            <a className={classes.btnPrimary} href={WA} target="_blank" rel="noopener noreferrer">
-              Konsultasi Gratis <IconArrow className={classes.btnIcon} />
-            </a>
-            <a className={classes.btnGhost} href="/layanan">
-              Jelajahi Solusi
-            </a>
-          </div>
-
-          <dl className={classes.stats}>
-            <div className={classes.stat}>
-              <dt>2008</dt>
-              <dd>Berdiri sejak</dd>
-            </div>
-            <div className={classes.stat}>
-              <dt>150+</dt>
-              <dd>Proyek selesai</dd>
-            </div>
-            <div className={classes.stat}>
-              <dt>4</dt>
-              <dd>Layanan terpadu</dd>
-            </div>
-            <div className={classes.stat}>
-              <dt>Nasional</dt>
-              <dd>Jangkauan klien</dd>
-            </div>
-          </dl>
-        </div>
-      </section>
-
-      {/* ============================ MARQUEE ============================ */}
-      <div className={classes.marqueeBand} aria-hidden="true">
-        <div className={classes.marqueeTrack}>
+    <main className={classes.page}>
+      {/* ── Titik nol: strip meta ─────────────────────────────── */}
+      <div className={classes.ticker}>
+        <div className={classes.tickerTrack}>
           {[0, 1].map((dup) => (
-            <div className={classes.marqueeGroup} key={dup}>
-              {['IT Support', 'Website', 'Software', 'Percetakan', 'Infrastruktur', 'Branding', 'Konsultasi IT', 'Cetak Buku'].map((w) => (
-                <span className={classes.marqueeItem} key={`${dup}-${w}`}>
-                  {w}
-                  <span className={classes.marqueeSep}>◆</span>
-                </span>
+            <div className={classes.tickerRow} key={dup} aria-hidden={dup === 1}>
+              {[
+                'EST. 2008 — SURABAYA, ID',
+                'WEBSITE',
+                'SOFTWARE',
+                'IT SUPPORT',
+                'PERCETAKAN',
+                'BRANDING',
+                '150+ PROYEK',
+                'RESPON < 24 JAM',
+              ].map((t) => (
+                <span key={t}>{t}</span>
               ))}
             </div>
           ))}
         </div>
       </div>
 
-      {/* ============================ 01 LAYANAN (BENTO) ============================ */}
-      <section className={classes.section} id="layanan">
-        <div className={classes.container}>
-          <header className={`${classes.head} k-reveal`}>
-            <span className={classes.eyebrow}>01 — Layanan</span>
-            <h2 className={classes.h2}>
-              Empat layanan utama yang saling melengkapi.
-            </h2>
-            <p className={classes.sub}>
-              Mulai dari website, software, support, hingga percetakan — setiap layanan dirancang
-              agar bisa berdiri sendiri atau digabung menjadi sistem kerja yang lebih utuh.
-            </p>
-          </header>
+      {/* ── Hero ──────────────────────────────────────────────── */}
+      <section className={classes.hero}>
+        <p className={classes.eyebrow}>
+          <span className={classes.marker}>◆</span> Digital studio — Surabaya
+        </p>
+        <h1 className={classes.h1}>
+          Bangun fondasi digital
+          <br />
+          yang rapi, stabil, dan siap tumbuh.
+        </h1>
+        <div className={classes.heroFoot}>
+          <p className={classes.lead}>
+            Kotacom membantu bisnis merancang, membangun, dan merawat sistem digital —
+            dari website dan aplikasi custom hingga infrastruktur IT dan percetakan.
+          </p>
+          <div className={classes.actions}>
+            <a className={classes.btnPrimary} href={WA} target="_blank" rel="noopener noreferrer">
+              Konsultasi gratis <Arrow />
+            </a>
+            <a className={classes.btnGhost} href="#layanan">
+              Lihat layanan
+            </a>
+          </div>
+        </div>
+      </section>
 
-          <div className={`${classes.bento} k-reveal`}>
-            {SERVICES.map((s) => (
-              <a
-                key={s.title}
-                href={s.href}
-                className={`${classes.tile} ${classes[`tile_${s.span}`]} ${classes[`tone_${s.tone}`]}`}
-              >
-                <div className={classes.tileTop}>
-                  <span className={classes.tileIconWrap}>{s.icon}</span>
-                  <IconArrow className={classes.tileArrow} />
-                </div>
-                <span className={classes.tileTag}>{s.tag}</span>
-                <h3 className={classes.tileTitle}>{s.title}</h3>
-                <p className={classes.tileDesc}>{s.desc}</p>
-                <ul className={classes.tilePoints}>
-                  {s.points.map((p) => (
-                    <li key={p}>{p}</li>
+      {/* ── Stat grid ─────────────────────────────────────────── */}
+      <div className={classes.stats} data-reveal>
+        {stats.map((s) => (
+          <div className={classes.stat} key={s.k}>
+            <span className={classes.statKey}>{s.k}</span>
+            <span className={classes.statVal}>{s.v}</span>
+            <span className={classes.statSub}>{s.s}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* ── 01 Layanan ────────────────────────────────────────── */}
+      <section className={classes.section} id="layanan" data-reveal>
+        <header className={classes.sectionHead}>
+          <div className={classes.sectionMeta}>
+            <span className={classes.num}>01</span>
+            <span className={classes.label}>Layanan</span>
+          </div>
+          <div className={classes.sectionIntro}>
+            <h2 className={classes.h2}>Empat pilar yang menopang operasional bisnis Anda.</h2>
+            <p className={classes.sub}>
+              Bukan daftar jasa yang terpisah — setiap pilar dirancang supaya saling menopang
+              dan bisa bertambah sesuai pertumbuhan bisnis.
+            </p>
+          </div>
+        </header>
+        <div className={classes.svcGrid}>
+          {services.map((s) => (
+            <article className={classes.svc} key={s.n}>
+              <div className={classes.svcTop}>
+                <span className={classes.svcNum}>{s.n}</span>
+                <Arrow />
+              </div>
+              <h3 className={classes.h3}>{s.title}</h3>
+              <p className={classes.svcDesc}>{s.desc}</p>
+              <ul className={classes.svcList}>
+                {s.items.map((i) => (
+                  <li key={i}>{i}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ── 02 Cara kerja ─────────────────────────────────────── */}
+      <section className={classes.section} data-reveal>
+        <header className={classes.sectionHead}>
+          <div className={classes.sectionMeta}>
+            <span className={classes.num}>02</span>
+            <span className={classes.label}>Cara kerja</span>
+          </div>
+          <div className={classes.sectionIntro}>
+            <h2 className={classes.h2}>Tiga langkah, tanpa kejutan di tengah jalan.</h2>
+          </div>
+        </header>
+        <ol className={classes.steps}>
+          {steps.map((s) => (
+            <li className={classes.step} key={s.n}>
+              <span className={classes.stepNum}>{s.n}</span>
+              <h3 className={classes.h3}>{s.t}</h3>
+              <p className={classes.stepDesc}>{s.d}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* ── 03 Teknologi ──────────────────────────────────────── */}
+      <section className={classes.section} data-reveal>
+        <header className={classes.sectionHead}>
+          <div className={classes.sectionMeta}>
+            <span className={classes.num}>03</span>
+            <span className={classes.label}>Teknologi</span>
+          </div>
+          <div className={classes.sectionIntro}>
+            <h2 className={classes.h2}>Perangkat yang kami kuasai.</h2>
+            <p className={classes.sub}>
+              Dipilih karena stabil dan banyak dipakai — supaya sistem Anda mudah dirawat
+              oleh tim mana pun setelahnya.
+            </p>
+          </div>
+        </header>
+        <ul className={classes.techGrid}>
+          {tech.map((t) => (
+            <li className={classes.tech} key={t}>
+              {t}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ── 04 Portfolio ──────────────────────────────────────── */}
+      <section className={classes.section} data-reveal>
+        <header className={classes.sectionHead}>
+          <div className={classes.sectionMeta}>
+            <span className={classes.num}>04</span>
+            <span className={classes.label}>Portfolio</span>
+          </div>
+          <div className={classes.sectionIntro}>
+            <h2 className={classes.h2}>Sebagian pekerjaan terbaru.</h2>
+          </div>
+        </header>
+        <div className={classes.projGrid}>
+          {projects.map((p) => (
+            <article className={classes.proj} key={p.t}>
+              <div className={classes.projTag}>{p.tag}</div>
+              <div className={classes.projBody}>
+                <h3 className={classes.h3}>{p.t}</h3>
+                <p className={classes.projDesc}>{p.d}</p>
+                <ul className={classes.chips}>
+                  {p.m.map((m) => (
+                    <li key={m}>{m}</li>
                   ))}
                 </ul>
-              </a>
-            ))}
-          </div>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* ============================ 02 PROSES ============================ */}
-      <section className={classes.sectionPanel}>
-        <div className={classes.container}>
-          <header className={`${classes.head} k-reveal`}>
-            <span className={classes.eyebrow}>02 — Cara Kami Bekerja</span>
-            <h2 className={classes.h2}>Tiga langkah yang membuat pekerjaan lebih terarah.</h2>
-          </header>
+      {/* ── 05 Testimoni ──────────────────────────────────────── */}
+      <section className={classes.section} data-reveal>
+        <header className={classes.sectionHead}>
+          <div className={classes.sectionMeta}>
+            <span className={classes.num}>05</span>
+            <span className={classes.label}>Testimoni</span>
+          </div>
+          <div className={classes.sectionIntro}>
+            <h2 className={classes.h2}>Kata mereka yang sudah bekerja dengan kami.</h2>
+          </div>
+        </header>
+        <div className={classes.quoteGrid}>
+          {quotes.map((q) => (
+            <figure className={classes.quote} key={q.n}>
+              <blockquote>{q.q}</blockquote>
+              <figcaption>
+                <span className={classes.qName}>{q.n}</span>
+                <span className={classes.qRole}>{q.r}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
 
-          <ol className={`${classes.steps} k-reveal`}>
-            {STEPS.map((s) => (
-              <li className={classes.step} key={s.n}>
-                <span className={classes.stepNo}>{s.n}</span>
-                <h3 className={classes.stepTitle}>{s.title}</h3>
-                <p className={classes.stepDesc}>{s.desc}</p>
-              </li>
-            ))}
-          </ol>
+      {/* ── 06 FAQ ────────────────────────────────────────────── */}
+      <section className={classes.section} data-reveal>
+        <header className={classes.sectionHead}>
+          <div className={classes.sectionMeta}>
+            <span className={classes.num}>06</span>
+            <span className={classes.label}>FAQ</span>
+          </div>
+          <div className={classes.sectionIntro}>
+            <h2 className={classes.h2}>Pertanyaan yang paling sering muncul.</h2>
+          </div>
+        </header>
+        <div className={classes.faq}>
+          {faqs.map((f) => (
+            <details className={classes.faqItem} key={f.q}>
+              <summary>
+                <span>{f.q}</span>
+                <Plus />
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
-          <div className={classes.stepCta}>
+      {/* ── 07 CTA ────────────────────────────────────────────── */}
+      <section className={classes.cta} data-reveal>
+        <div className={classes.ctaMeta}>
+          <span className={classes.num}>07</span>
+          <span className={classes.label}>Mulai</span>
+        </div>
+        <div className={classes.ctaBody}>
+          <h2 className={classes.h2}>Punya rencana? Mari kita rapikan bersama.</h2>
+          <p className={classes.sub}>
+            Ceritakan kebutuhan Anda — kami balas dengan penilaian jujur soal cakupan,
+            biaya, dan waktu. Tanpa biaya konsultasi.
+          </p>
+          <div className={classes.actions}>
             <a className={classes.btnPrimary} href={WA} target="_blank" rel="noopener noreferrer">
-              <IconWhatsapp className={classes.btnIcon} /> Konsultasi via WhatsApp
+              Chat via WhatsApp <Arrow />
             </a>
-            <a className={classes.btnGhost} href="/layanan">
-              Lihat semua layanan <IconArrow className={classes.btnIcon} />
+            <a className={classes.btnGhost} href="mailto:halo@kotacom.id">
+              halo@kotacom.id
             </a>
           </div>
         </div>
       </section>
 
-      {/* ============================ 03 TEKNOLOGI ============================ */}
-      <section className={classes.section}>
-        <div className={classes.container}>
-          <header className={`${classes.head} k-reveal`}>
-            <span className={classes.eyebrow}>03 — Teknologi</span>
-            <h2 className={classes.h2}>Stack yang dipilih untuk performa dan stabilitas.</h2>
-            <p className={classes.sub}>
-              Kami memakai teknologi yang relevan dengan kebutuhan proyek, bukan sekadar mengikuti tren.
-            </p>
-          </header>
-
-          <ul className={`${classes.tech} k-reveal`}>
-            {TECH.map((t) => (
-              <li className={classes.techItem} key={t}>
-                <span className={classes.techDot} />
-                {t}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* ============================ 04 PORTFOLIO ============================ */}
-      <section className={classes.sectionPanel} id="portfolio">
-        <div className={classes.container}>
-          <header className={`${classes.headRow} k-reveal`}>
-            <div>
-              <span className={classes.eyebrow}>04 — Portfolio</span>
-              <h2 className={classes.h2}>Proyek terbaru yang kami selesaikan.</h2>
-            </div>
-            <a className={classes.headLink} href="/projects">
-              Semua portfolio <IconArrow className={classes.btnIcon} />
-            </a>
-          </header>
-
-          <div className={`${classes.projects} k-reveal`}>
-            {PROJECTS.map((p) => (
-              <article className={`${classes.project} ${classes[`tone_${p.tone}`]}`} key={p.title}>
-                <div className={classes.projectVisual} aria-hidden="true">
-                  <span className={classes.projectMesh} />
-                  <span className={classes.projectBadge}>{p.tag}</span>
-                </div>
-                <div className={classes.projectBody}>
-                  <h3 className={classes.projectTitle}>{p.title}</h3>
-                  <p className={classes.projectDesc}>{p.desc}</p>
-                  <span className={classes.projectLink}>
-                    Lihat detail <IconArrow className={classes.btnIcon} />
-                  </span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================ 05 TESTIMONI ============================ */}
-      <section className={classes.section}>
-        <div className={classes.container}>
-          <header className={`${classes.head} k-reveal`}>
-            <span className={classes.eyebrow}>05 — Testimoni</span>
-            <h2 className={classes.h2}>Apa kata klien tentang layanan kami.</h2>
-          </header>
-
-          <div className={`${classes.quotes} k-reveal`}>
-            {QUOTES.map((q) => (
-              <figure className={classes.quote} key={q.name}>
-                <span className={classes.quoteMark} aria-hidden="true">
-                  &ldquo;
-                </span>
-                <blockquote className={classes.quoteText}>{q.text}</blockquote>
-                <figcaption className={classes.quoteBy}>
-                  <span className={classes.quoteName}>{q.name}</span>
-                  <span className={classes.quoteRole}>{q.role}</span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================ 06 FAQ ============================ */}
-      <section className={classes.sectionPanel} id="faq">
-        <div className={classes.container}>
-          <header className={`${classes.head} k-reveal`}>
-            <span className={classes.eyebrow}>06 — FAQ</span>
-            <h2 className={classes.h2}>Ada pertanyaan? Kami punya jawabannya.</h2>
-          </header>
-
-          <div className={`${classes.faqList} k-reveal`}>
-            {FAQ.map((f) => (
-              <details className={classes.faqItem} key={f.q}>
-                <summary className={classes.faqQ}>
-                  <span>{f.q}</span>
-                  <IconPlus className={classes.faqIcon} />
-                </summary>
-                <div className={classes.faqA}>{f.a}</div>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================ 07 CTA ============================ */}
-      <section className={classes.ctaSection}>
-        <div className={classes.container}>
-          <div className={`${classes.ctaPanel} k-reveal`}>
-            <div className={classes.ctaGlow} aria-hidden="true" />
-            <span className={classes.eyebrow}>Mari Berkolaborasi</span>
-            <h2 className={classes.ctaTitle}>
-              Siap mengubah cara bisnis Anda bekerja hari ini?
-            </h2>
-            <p className={classes.ctaLead}>
-              Diskusikan tantangan operasional dan teknis Anda bersama kami. Tim konsultan
-              KOTACOM membantu menemukan strategi yang tepat sasaran dengan budget paling realistis.
-            </p>
-            <div className={classes.ctaActions}>
-              <a className={classes.btnPrimaryLight} href={WA} target="_blank" rel="noopener noreferrer">
-                <IconWhatsapp className={classes.btnIcon} /> Chat WhatsApp
-              </a>
-              <a className={classes.btnGhostLight} href="/kontak">
-                Hubungi Kami <IconArrow className={classes.btnIcon} />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Reveal />
     </main>
   )
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import React from 'react'
 
-import { KotacomHome } from '@components/KotacomHome'
+import KotacomHome from '@components/KotacomHome'
 import { ForceDarkTheme } from '@components/KotacomHome/ForceDarkTheme'
 
 export const metadata: Metadata = {
