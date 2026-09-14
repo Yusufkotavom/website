@@ -77,7 +77,7 @@ export const CaseStudiesHighlightBlock: React.FC<Props> = ({
                           href={`/case-studies/${slug}`}
                           prefetch={false}
                         >
-                          <Image alt={alt} fill src={`${process.env.NEXT_PUBLIC_CMS_URL}${url}`} />
+                          {url && <Image alt={alt ?? 'Case study'} fill src={url} />}
                         </Link>
                       </li>
                     )

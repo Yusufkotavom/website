@@ -13,7 +13,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
 
-import { FullLogo } from '../../../graphics/FullLogo/index'
+import { KotacomLogo } from '../../../graphics/KotacomLogo/index'
 import { MenuIcon } from '../../../graphics/MenuIcon/index'
 import { CMSLink } from '../../CMSLink/index'
 import classes from './index.module.scss'
@@ -243,12 +243,12 @@ export const MobileNav: React.FC<NavItems> = (props) => {
               className={[classes.menuBarContainer, 'cols-16 cols-m-8'].filter(Boolean).join(' ')}
             >
               <Link
-                aria-label="Full Payload Logo"
+                aria-label="Kotacom"
                 className={classes.logo}
                 href="/"
                 prefetch={false}
               >
-                <FullLogo className="w-auto h-[30px]" />
+                <KotacomLogo className="w-auto h-[30px]" />
               </Link>
               <div className={classes.icons}>
                 <div

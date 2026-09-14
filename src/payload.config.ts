@@ -58,6 +58,7 @@ import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Products } from './collections/Products'
 import { ReusableContent } from './collections/ReusableContent'
 import { Users } from './collections/Users'
 import { Footer } from './globals/Footer'
@@ -127,7 +128,7 @@ export default buildConfig({
       labels: { plural: 'Commands', singular: 'Command' },
     },
   ],
-  collections: [CaseStudies, Media, Pages, Posts, Categories, ReusableContent, Users],
+  collections: [CaseStudies, Products, Media, Pages, Posts, Categories, ReusableContent, Users],
   cors: [process.env.PAYLOAD_PUBLIC_APP_URL || ''].filter(Boolean),
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',

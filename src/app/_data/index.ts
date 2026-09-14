@@ -10,6 +10,7 @@ import type {
   MainMenu,
   Page,
   Post,
+  Product,
   TopBar,
 } from '../../payload-types'
 
@@ -350,6 +351,36 @@ export const fetchCaseStudy = async (slug: string): Promise<CaseStudy> => {
     },
   })
 
+  return data.docs[0]
+}
+
+export const fetchProducts = async (): Promise<Partial<Product>[]> => {
+  const payload = await getPayload({ config })
+  const data = await payload.find({
+    collection: 'products',
+    depth: 0,
+    limit: 300,
+    select: { slug: true, offeringType: true },
+    sort: '-createdAt',
+  })
+  return data.docs
+}
+
+export const fetchProduct = async (slug: string): Promise<Product> => {
+  const { isEnabled: draft } = await draftMode()
+  const payload = await getPayload({ config })
+  const data = await payload.find({
+    collection: 'products',
+    depth: 1,
+    draft,
+    limit: 1,
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        ...(draft ? [] : [{ _status: { equals: 'published' as const } }]),
+      ],
+    },
+  })
   return data.docs[0]
 }
 

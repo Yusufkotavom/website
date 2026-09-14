@@ -7,7 +7,7 @@ import { useHeaderObserver } from '@root/providers/HeaderIntersectionObserver/in
 import Link from 'next/link'
 import * as React from 'react'
 
-import { FullLogo } from '../../../graphics/FullLogo/index'
+import { KotacomLogo } from '../../../graphics/KotacomLogo/index'
 import { CMSLink } from '../../CMSLink/index'
 import classes from './index.module.scss'
 
@@ -105,8 +105,8 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ hideBackground, menuCta, 
       >
         <div className={[classes.grid, 'grid'].join(' ')}>
           <div className={[classes.logo, 'cols-4'].join(' ')}>
-            <Link aria-label="Full Payload Logo" className={classes.logo} href="/" prefetch={false}>
-              <FullLogo className="w-auto h-[30px]" />
+            <Link aria-label="Kotacom" className={classes.logo} href="/" prefetch={false}>
+              <KotacomLogo className="w-auto h-[30px]" />
             </Link>
           </div>
           <div className={[classes.content, 'cols-8'].join(' ')}>

@@ -104,6 +104,7 @@ export interface Config {
   };
   collections: {
     'case-studies': CaseStudy;
+    products: Product;
     media: Media;
     pages: Page;
     posts: Post;
@@ -126,6 +127,7 @@ export interface Config {
   };
   collectionsSelect: {
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
@@ -2769,6 +2771,66 @@ export interface Command {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: string;
+  title: string;
+  offeringType: 'service' | 'portfolio' | 'product';
+  shortDescription?: string | null;
+  category?: string | null;
+  price?: string | null;
+  featuredImage: string | Media;
+  gallery?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  specs?:
+    | {
+        label: string;
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?:
+    | (
+        | Callout
+        | Cta
+        | CardGrid
+        | CaseStudyCards
+        | CaseStudiesHighlight
+        | CaseStudyParallax
+        | CodeFeature
+        | Content
+        | ContentGrid
+        | ComparisonTableType
+        | FormBlock
+        | HoverCards
+        | HoverHighlights
+        | LinkGrid
+        | LogoGrid
+        | MediaBlock
+        | MediaContent
+        | MediaContentAccordion
+        | Pricing
+        | ReusableContentBlock
+        | Slider
+        | Statement
+        | StepsBlock
+        | StickyHighlights
+        | ExampleTabsBlock
+      )[]
+    | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -2866,6 +2928,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'case-studies';
         value: string | CaseStudy;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: string | Product;
       } | null)
     | ({
         relationTo: 'media';
@@ -2979,6 +3045,37 @@ export interface CaseStudiesSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  offeringType?: T;
+  shortDescription?: T;
+  category?: T;
+  price?: T;
+  featuredImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  specs?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  layout?: T | {};
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
