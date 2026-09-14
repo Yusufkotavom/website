@@ -42,9 +42,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const entries: MetadataRoute.Sitemap = []
 
+  // Internal/test pages that must never be indexed or listed.
+  const EXCLUDE = new Set(['/home', '/sample-blocks', '/preview', '/thanks-for-subscribing'])
+
   for (const page of pages) {
     const url = page?.breadcrumbs?.[page.breadcrumbs.length - 1]?.url
-    if (url && url !== '/') {
+    if (url && url !== '/' && !EXCLUDE.has(url) && !page?.noindex) {
       entries.push({ url: `${base}${url}`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 })
     }
   }
