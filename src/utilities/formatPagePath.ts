@@ -22,7 +22,9 @@ export const formatPagePath = (
         prefix = '/partners'
         break
       case 'posts':
-        prefix = `/posts/${category}`
+        // Flat permalink: /posts/<slug>. The post stays reachable if its
+        // category slug is renamed; /posts/<category>/<slug> also still works.
+        prefix = '/posts'
         break
       default:
         prefix = `/${collection}`

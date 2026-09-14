@@ -41,6 +41,11 @@ WORKDIR /app
 ENV NODE_ENV=production PORT=3000 HOSTNAME=0.0.0.0 NEXT_TELEMETRY_DISABLED=1
 RUN addgroup -S nodejs && adduser -S nextjs -G nodejs
 
+# Payload writes user uploads into MEDIA_DIR (default: ./media, i.e. /app/media).
+# The runner runs as `nextjs`, so the directory must exist and be owned by it —
+# otherwise `EACCES: permission denied, mkdir 'media'` on every upload.
+RUN mkdir -p /app/media && chown nextjs:nodejs /app/media
+
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static

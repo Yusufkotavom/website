@@ -77,7 +77,7 @@ const steps = [
   { n: '03', t: 'Eksekusi & dampingi', d: 'Bangun, uji, rilis, lalu dampingi operasional harian beserta dokumentasi dan pelatihan.' },
 ]
 
-const tech = [
+const tech: { name: string; icon: string; role: string; wide?: boolean }[] = [
   { name: 'TypeScript', icon: 'typescript', role: 'Language' },
   { name: 'Next.js', icon: 'nextdotjs', role: 'Framework' },
   { name: 'React', icon: 'react', role: 'Library' },

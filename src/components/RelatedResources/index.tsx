@@ -33,7 +33,7 @@ export const RelatedResources: React.FC<RelatedResourcesProps> = ({ guides, rela
                   return (
                     typeof guide !== 'string' && (
                       <li className={classes.item} key={guide.slug}>
-                        <Link href={`/posts/guides/${guide.slug}`} prefetch={false}>
+                        <Link href={`/posts/${guide.slug}`} prefetch={false}>
                           {guide.title} <ArrowIcon className={classes.relatedPostsArrow} />
                         </Link>
                       </li>

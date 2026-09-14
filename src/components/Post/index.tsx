@@ -66,7 +66,7 @@ export const Post: React.FC<Partial<PostType>> = (props) => {
                           {typeof category !== 'string' && category?.name}
                         </span>
                       ),
-                      url: typeof category !== 'string' ? `/posts/${category?.slug}` : 'posts/blog',
+                      url: typeof category !== 'string' ? `/posts/${category?.slug}` : '/posts',
                     },
                     {
                       ...(publishedOn && {

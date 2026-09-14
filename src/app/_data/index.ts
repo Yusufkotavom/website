@@ -268,6 +268,57 @@ export const fetchBlogPost = async (slug: string, category): Promise<Partial<Pos
   return data.docs[0]
 }
 
+/**
+ * Resolve a post by its slug alone, ignoring the category segment.
+ * Powers the flat `/posts/<slug>` URL that the admin preview and
+ * formatPagePath() emit, so a post never depends on its category slug
+ * staying stable.
+ */
+export const fetchPostBySlug = async (slug: string): Promise<Partial<Post>> => {
+  const { isEnabled: draft } = await draftMode()
+  const payload = await getPayload({ config })
+
+  const data = await payload.find({
+    collection: 'posts',
+    depth: 2,
+    draft,
+    limit: 1,
+    overrideAccess: draft,
+    select: {
+      authors: true,
+      authorType: true,
+      category: true,
+      content: true,
+      excerpt: true,
+      featuredMedia: true,
+      guestAuthor: true,
+      guestSocials: true,
+      image: true,
+      meta: true,
+      publishedOn: true,
+      relatedPosts: true,
+      title: true,
+      videoUrl: true,
+    },
+    where: {
+      and: [
+        { slug: { equals: slug } },
+        ...(draft
+          ? []
+          : [
+              {
+                _status: {
+                  equals: 'published',
+                },
+              },
+            ]),
+      ],
+    },
+  })
+
+  return data.docs[0]
+}
+
 export const fetchCaseStudies = async (): Promise<Partial<CaseStudy>[]> => {
   const payload = await getPayload({ config })
   const data = await payload.find({
