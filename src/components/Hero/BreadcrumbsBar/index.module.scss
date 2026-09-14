@@ -2,7 +2,7 @@
 
 .wrapper {
   position: relative;
-  padding-top: var(--page-padding-top);
+  padding-top: var(--page-top-clearance);
   z-index: 1;
   transition: padding-top 500ms ease-out;
 

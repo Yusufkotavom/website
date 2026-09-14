@@ -28,6 +28,7 @@
   --header-height: 90px;
   --top-bar-height: 3rem;
   --page-padding-top: calc(var(--header-height) + var(--top-bar-height));
+  --page-top-clearance: calc(var(--page-padding-top) + 1.75rem);
 
   --font-body-size: 18px;
 

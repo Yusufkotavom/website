@@ -27,6 +27,7 @@ $mono: var(--font-geist-mono);
   margin: 0 auto;
   background: $fill;
   color: $ink;
+  padding-top: var(--page-top-clearance);
   border-left: $hair;
   border-right: $hair;
   overflow: hidden;
