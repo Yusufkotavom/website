@@ -64,8 +64,11 @@ sudo docker service update --force app-back-up-virtual-bandwidth-m5e772
 
 ## Redeploy
 
-Repo ini **public**, jadi Dokploy bisa clone + build sendiri, **tapi** build-nya
-butuh DB (`generateStaticParams` / prerender). Supaya redeploy tidak pernah gagal:
+Repo ini **public** dan app-nya di-set `sourceType=git` (branch `main`), jadi Dokploy
+clone + build sendiri — tombol Deploy di UI sudah cukup dan **sudah diuji berhasil**
+(2026-09-14, build dari Dokploy selesai ~6 menit, service 1/1, mount media utuh).
+
+Build **tidak lagi butuh DB**. Dulu gagal karena:
 
 - Halaman dirender **on-demand** (`force-dynamic`), bukan prerender saat build.
 - `src/utilities/buildSafe.ts` membuat loader DB gagal-aman **hanya saat build**;
@@ -77,13 +80,14 @@ Tombol **Deploy** di Dokploy. Builder akan clone repo, jalankan `pnpm build:skip
 dan push image. Kalau builder tidak bisa menjangkau DB, build tetap sukses berkat
 `buildSafe` dan halaman di-render saat request.
 
-### Jalur B — build lokal di VPS (kalau Dokploy builder bermasalah)
+### ### Jalur B — build lokal di VPS (fallback)
 
 ```bash
-bash /home/ubuntu/backups/../projects/payloadcms-website/deploy.sh
+cd /home/ubuntu/projects/payloadcms-website
+bash deploy.sh          # proxy + build + service update + verify, semua otomatis
 ```
 
-Butuh akses DB saat build → proxy socat:
+Skrip itu sudah menangani proxy socat sendiri. Isi manualnya, kalau perlu:
 ```bash
 sudo docker rm -f mongo-build-proxy 2>/dev/null
 sudo docker run -d --name mongo-build-proxy --network dokploy-network \
