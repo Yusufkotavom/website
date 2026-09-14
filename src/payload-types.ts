@@ -67,6 +67,7 @@ export interface Config {
     'payload-mcp-api-keys': PayloadMcpApiKeyAuthOperations;
   };
   blocks: {
+    aiContent: AiContentBlock;
     blogContent: BlogContent;
     blogMarkdown: BlogMarkdown;
     CodeExampleBlock: CodeExampleBlock;
@@ -112,6 +113,10 @@ export interface Config {
     categories: Category;
     'reusable-content': ReusableContent;
     users: User;
+    'generator-templates': GeneratorTemplate;
+    'generator-datasets': GeneratorDataset;
+    'generator-programs': GeneratorProgram;
+    'generator-runs': GeneratorRun;
     forms: Form;
     'form-submissions': FormSubmission;
     redirects: Redirect;
@@ -135,6 +140,10 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'reusable-content': ReusableContentSelect<false> | ReusableContentSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'generator-templates': GeneratorTemplatesSelect<false> | GeneratorTemplatesSelect<true>;
+    'generator-datasets': GeneratorDatasetsSelect<false> | GeneratorDatasetsSelect<true>;
+    'generator-programs': GeneratorProgramsSelect<false> | GeneratorProgramsSelect<true>;
+    'generator-runs': GeneratorRunsSelect<false> | GeneratorRunsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -211,6 +220,70 @@ export interface PayloadMcpApiKeyAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AiContentBlock".
+ */
+export interface AiContentBlock {
+  aiContentFields?: {
+    settings?: {
+      /**
+       * Leave blank for system default
+       */
+      theme?: ('light' | 'dark') | null;
+      background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
+    };
+    /**
+     * Instruksi untuk AI. Boleh memakai token seperti {{primaryKeyword}}, {{city}}, {{offer}}.
+     */
+    prompt?: string | null;
+    /**
+     * Daftar token yang dipakai prompt ini (opsional, untuk audit).
+     */
+    tokens?: string[] | null;
+    /**
+     * Hasil AI. Bisa ditimpa (overwrite) saat re-generate; kosong berarti pakai konten manual di bawah.
+     */
+    generatedText?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Konten manual / fallback bila AI tidak dipakai atau gagal.
+     */
+    content?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    model?: string | null;
+    generatedAt?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aiContent';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -723,6 +796,7 @@ export interface Page {
     logoShowcase?: (string | Media)[] | null;
   };
   layout: (
+    | AiContentBlock
     | Callout
     | Cta
     | CardGrid
@@ -751,6 +825,17 @@ export interface Page {
     | WhatsappCta
   )[];
   slug?: string | null;
+  generator?: {
+    version?: string | null;
+    aiUsed?: boolean | null;
+    programId?: string | null;
+    datasetId?: string | null;
+    templateId?: string | null;
+    rowKey?: string | null;
+    keywordKey?: string | null;
+    lastRunId?: string | null;
+    generatedAt?: string | null;
+  };
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -802,6 +887,7 @@ export interface Post {
     [k: string]: unknown;
   };
   content: (
+    | AiContentBlock
     | {
         bannerFields: {
           settings?: {
@@ -849,6 +935,17 @@ export interface Post {
     twitter?: string | null;
     linkedin?: string | null;
     website?: string | null;
+  };
+  generator?: {
+    version?: string | null;
+    aiUsed?: boolean | null;
+    programId?: string | null;
+    datasetId?: string | null;
+    templateId?: string | null;
+    rowKey?: string | null;
+    keywordKey?: string | null;
+    lastRunId?: string | null;
+    generatedAt?: string | null;
   };
   publishedOn: string;
   meta?: {
@@ -2889,6 +2986,240 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-templates".
+ */
+export interface GeneratorTemplate {
+  id: string;
+  name: string;
+  entityType: 'page' | 'post';
+  /**
+   * Awalan rute, mis. /percetakan/cetak-buku. Kosong untuk post (flat /posts/<slug>).
+   */
+  routeBase?: string | null;
+  /**
+   * Pola slug, mis. {{routeBase}}/{{city}}. Kosong = <routeBase>/<slug(city|keyword)>.
+   */
+  slugPattern?: string | null;
+  /**
+   * Pola judul/H1, mis. {{primaryKeyword}} di {{city}}.
+   */
+  h1Pattern?: string | null;
+  /**
+   * Pola meta title (dinormalisasi 30–70 char).
+   */
+  seoTitlePattern?: string | null;
+  /**
+   * Pola meta description (dinormalisasi 110–170 char).
+   */
+  seoDescriptionPattern?: string | null;
+  /**
+   * Token kustom & pemetaannya ke kolom dataset (opsional).
+   */
+  tokens?:
+    | {
+        name: string;
+        /**
+         * Kolom di data baris dataset (default: nama token).
+         */
+        sourceField?: string | null;
+        fallbackValue?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  hero: {
+    type: 'default' | 'centeredContent' | 'contentMedia';
+    /**
+     * Leave blank for system default
+     */
+    theme?: ('light' | 'dark') | null;
+    richText?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  /**
+   * Stack blok untuk entity page (boleh memuat blok aiContent).
+   */
+  layout?: unknown[] | null;
+  /**
+   * Fragmen field-level (opsional, belum di-inject otomatis). Hanya untuk template yang memakainya lewat apiMode.
+   */
+  fieldBlocks?: unknown[] | null;
+  /**
+   * Untuk post: kategori default.
+   */
+  defaultCategory?: (string | null) | Category;
+  /**
+   * Untuk post: gambar default.
+   */
+  defaultImage?: (string | null) | Media;
+  /**
+   * Untuk post: author default.
+   */
+  defaultAuthors?: (string | User)[] | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-datasets".
+ */
+export interface GeneratorDataset {
+  id: string;
+  name: string;
+  notes?: string | null;
+  /**
+   * Tiap baris = satu dokumen yang dihasilkan.
+   */
+  rows?:
+    | {
+        /**
+         * ID stabil baris (mis. bandung). Dipakai untuk deteksi duplikat.
+         */
+        key: string;
+        /**
+         * Objek data baris; tiap key jadi token {{key}}.
+         */
+        data:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-programs".
+ */
+export interface GeneratorProgram {
+  id: string;
+  name: string;
+  entityType: 'page' | 'post';
+  /**
+   * Override routeBase dari template (opsional).
+   */
+  routeBase?: string | null;
+  /**
+   * Skeleton blok + pola SEO.
+   */
+  template: string | GeneratorTemplate;
+  /**
+   * Sumber baris. Bila lebih dari satu, antrean digabung.
+   */
+  datasets: (string | GeneratorDataset)[];
+  aiMode?: ('off' | 'dry' | 'generate') | null;
+  /**
+   * Default: pro-coding (gateway lokal 20128).
+   */
+  aiModel?: string | null;
+  /**
+   * overwrite = update dokumen dgn slug sama (id tetap, versi naik).
+   */
+  writeMode?: ('create' | 'overwrite') | null;
+  outputStatus?: ('draft' | 'published') | null;
+  /**
+   * Batasi jumlah baris per run (0 = semua).
+   */
+  maxRows?: number | null;
+  /**
+   * Row key yang dilewati.
+   */
+  excludeRowKeys?: string[] | null;
+  status?: ('idle' | 'running' | 'done' | 'failed') | null;
+  lastRunAt?: string | null;
+  lastRunSummary?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-runs".
+ */
+export interface GeneratorRun {
+  id: string;
+  runId: string;
+  /**
+   * ID program yang dijalankan.
+   */
+  program?: (string | null) | GeneratorProgram;
+  entityType?: string | null;
+  mode?: string | null;
+  aiModel?: string | null;
+  writeMode?: string | null;
+  status?: ('running' | 'done' | 'failed') | null;
+  startedAt?: string | null;
+  finishedAt?: string | null;
+  totals?: {
+    rows?: number | null;
+    ready?: number | null;
+    warning?: number | null;
+    blocked?: number | null;
+    created?: number | null;
+    updated?: number | null;
+    skipped?: number | null;
+  };
+  /**
+   * Laporan per-baris (QA + aksi + id dokumen).
+   */
+  report?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -3014,6 +3345,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'generator-templates';
+        value: string | GeneratorTemplate;
+      } | null)
+    | ({
+        relationTo: 'generator-datasets';
+        value: string | GeneratorDataset;
+      } | null)
+    | ({
+        relationTo: 'generator-programs';
+        value: string | GeneratorProgram;
+      } | null)
+    | ({
+        relationTo: 'generator-runs';
+        value: string | GeneratorRun;
       } | null)
     | ({
         relationTo: 'forms';
@@ -3308,6 +3655,19 @@ export interface PagesSelect<T extends boolean = true> {
       };
   layout?: T | {};
   slug?: T;
+  generator?:
+    | T
+    | {
+        version?: T;
+        aiUsed?: T;
+        programId?: T;
+        datasetId?: T;
+        templateId?: T;
+        rowKey?: T;
+        keywordKey?: T;
+        lastRunId?: T;
+        generatedAt?: T;
+      };
   meta?:
     | T
     | {
@@ -3377,6 +3737,19 @@ export interface PostsSelect<T extends boolean = true> {
         twitter?: T;
         linkedin?: T;
         website?: T;
+      };
+  generator?:
+    | T
+    | {
+        version?: T;
+        aiUsed?: T;
+        programId?: T;
+        datasetId?: T;
+        templateId?: T;
+        rowKey?: T;
+        keywordKey?: T;
+        lastRunId?: T;
+        generatedAt?: T;
       };
   publishedOn?: T;
   meta?:
@@ -3461,6 +3834,113 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-templates_select".
+ */
+export interface GeneratorTemplatesSelect<T extends boolean = true> {
+  name?: T;
+  entityType?: T;
+  routeBase?: T;
+  slugPattern?: T;
+  h1Pattern?: T;
+  seoTitlePattern?: T;
+  seoDescriptionPattern?: T;
+  tokens?:
+    | T
+    | {
+        name?: T;
+        sourceField?: T;
+        fallbackValue?: T;
+        id?: T;
+      };
+  hero?:
+    | T
+    | {
+        type?: T;
+        theme?: T;
+        richText?: T;
+        description?: T;
+      };
+  layout?: T | {};
+  fieldBlocks?: T | {};
+  defaultCategory?: T;
+  defaultImage?: T;
+  defaultAuthors?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-datasets_select".
+ */
+export interface GeneratorDatasetsSelect<T extends boolean = true> {
+  name?: T;
+  notes?: T;
+  rows?:
+    | T
+    | {
+        key?: T;
+        data?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-programs_select".
+ */
+export interface GeneratorProgramsSelect<T extends boolean = true> {
+  name?: T;
+  entityType?: T;
+  routeBase?: T;
+  template?: T;
+  datasets?: T;
+  aiMode?: T;
+  aiModel?: T;
+  writeMode?: T;
+  outputStatus?: T;
+  maxRows?: T;
+  excludeRowKeys?: T;
+  status?: T;
+  lastRunAt?: T;
+  lastRunSummary?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "generator-runs_select".
+ */
+export interface GeneratorRunsSelect<T extends boolean = true> {
+  runId?: T;
+  program?: T;
+  entityType?: T;
+  mode?: T;
+  aiModel?: T;
+  writeMode?: T;
+  status?: T;
+  startedAt?: T;
+  finishedAt?: T;
+  totals?:
+    | T
+    | {
+        rows?: T;
+        ready?: T;
+        warning?: T;
+        blocked?: T;
+        created?: T;
+        updated?: T;
+        skipped?: T;
+      };
+  report?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

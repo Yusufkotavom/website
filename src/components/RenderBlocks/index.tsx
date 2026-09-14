@@ -2,9 +2,10 @@
 
 import type { RelatedPostsBlock } from '@blocks/RelatedPosts/index'
 import type { PaddingProps, Settings } from '@components/BlockWrapper/index'
-import type { Page, ReusableContent } from '@root/payload-types'
+import type { AiContentBlock, Page, ReusableContent } from '@root/payload-types'
 import type { Theme } from '@root/providers/Theme/types'
 
+import { AiContent as AiContentBlockComponent } from '@blocks/AiContent/index'
 import { BannerBlock } from '@blocks/Banner/index'
 import { BlogContent } from '@blocks/BlogContent/index'
 import { BlogMarkdown } from '@blocks/BlogMarkdown/index'
@@ -43,6 +44,7 @@ import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'reac
 type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
 const blockComponents = {
+  aiContent: AiContentBlockComponent,
   banner: BannerBlock,
   blogContent: BlogContent,
   blogMarkdown: BlogMarkdown,
@@ -75,7 +77,11 @@ const blockComponents = {
   whatsappCta: WhatsAppCTABlock,
 }
 
-export type BlocksProp = RelatedPostsBlock | ReusableContent['layout'][0] | ReusableContentBlockType
+export type BlocksProp =
+  | AiContentBlock
+  | RelatedPostsBlock
+  | ReusableContent['layout'][0]
+  | ReusableContentBlockType
 
 type Props = {
   blocks: BlocksProp[]

@@ -23,6 +23,7 @@ import path from 'path'
 import { buildConfig, type TextField } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { AiContent } from './blocks/AiContent'
 import { Banner } from './blocks/Banner'
 import { BlogContent } from './blocks/BlogContent'
 import { BlogMarkdown } from './blocks/BlogMarkdown'
@@ -56,6 +57,10 @@ import { StickyHighlights } from './blocks/StickyHighlights'
 import { WhatsAppCTA as WhatsAppCTABlock } from './blocks/WhatsAppCTA'
 import { CaseStudies } from './collections/CaseStudies'
 import { Categories } from './collections/Categories'
+import { GeneratorDatasets } from './collections/GeneratorDatasets'
+import { GeneratorPrograms } from './collections/GeneratorPrograms'
+import { GeneratorRuns } from './collections/GeneratorRuns'
+import { GeneratorTemplates } from './collections/GeneratorTemplates'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
@@ -87,6 +92,7 @@ export default buildConfig({
     },
   },
   blocks: [
+    AiContent,
     BlogContent,
     BlogMarkdown,
     CodeExampleBlock,
@@ -132,7 +138,20 @@ export default buildConfig({
       labels: { plural: 'Commands', singular: 'Command' },
     },
   ],
-  collections: [CaseStudies, Products, Media, Pages, Posts, Categories, ReusableContent, Users],
+  collections: [
+    CaseStudies,
+    Products,
+    Media,
+    Pages,
+    Posts,
+    Categories,
+    ReusableContent,
+    Users,
+    GeneratorTemplates,
+    GeneratorDatasets,
+    GeneratorPrograms,
+    GeneratorRuns,
+  ],
   cors: [process.env.PAYLOAD_PUBLIC_APP_URL || ''].filter(Boolean),
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',

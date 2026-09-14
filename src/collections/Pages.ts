@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'
 import { fullTitle } from '../fields/fullTitle'
+import { generatorField } from '../fields/generatorField'
 import { hero } from '../fields/hero'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
@@ -67,6 +68,7 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               type: 'blocks',
               blockReferences: [
+                'aiContent',
                 'callout',
                 'cta',
                 'cardGrid',
@@ -103,6 +105,7 @@ export const Pages: CollectionConfig = {
       ],
     },
     slugField(),
+    generatorField,
   ],
   hooks: {
     afterChange: [
