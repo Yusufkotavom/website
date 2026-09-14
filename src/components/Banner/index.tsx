@@ -1,4 +1,4 @@
-import type { BannerBlock, ReusableContent } from '@root/payload-types'
+import type { ReusableContent } from '@root/payload-types'
 
 import { CheckIcon } from '@root/icons/CheckIcon/index'
 import * as React from 'react'
@@ -6,16 +6,19 @@ import * as React from 'react'
 import { RichText } from '../RichText/index'
 import classes from './index.module.scss'
 
+export type BannerFields = Extract<
+  ReusableContent['layout'][0],
+  { blockType: 'banner' }
+>['bannerFields']
+
 export type Props = {
   checkmark?: boolean
   children?: React.ReactNode
-  content?:
-    | BannerBlock['content']
-    | Extract<ReusableContent['layout'][0], { blockType: 'banner' }>['bannerFields']['content']
+  content?: BannerFields['content']
   icon?: 'checkmark'
   margin?: boolean
   marginAdjustment?: any
-  type?: BannerBlock['type']
+  type?: BannerFields['type']
 }
 
 const Icons = {

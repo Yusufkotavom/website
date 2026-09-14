@@ -12,13 +12,14 @@ import React from 'react'
 
 import { CaseStudy } from './client_page'
 
-// Case studies are CMS content authored via the admin panel — render dynamically
-// (per-request SSR) so new entries appear without a full rebuild, and so the
-// production build does not require case-studies rows to exist in the DB.
-export const dynamic = 'force-dynamic'
+// Rendered on demand; the case-study query is cached at the data layer (ISR) so the
+// page is served from cache between admin edits. Keep it build-safe: generateStaticParams
+// is wrapped in buildSafe so prerendering never hard-depends on the DB.
 
 const getCaseStudy = (slug, draft) =>
-  draft ? fetchCaseStudy(slug) : unstable_cache(fetchCaseStudy, [`case-study-${slug}`])(slug)
+  draft
+    ? fetchCaseStudy(slug)
+    : unstable_cache(fetchCaseStudy, [`case-study-${slug}`], { revalidate: 300 })(slug)
 
 const CaseStudyBySlug = async ({ params }) => {
   const { isEnabled: draft } = await draftMode()

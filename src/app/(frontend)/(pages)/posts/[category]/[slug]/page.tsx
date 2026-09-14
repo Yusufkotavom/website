@@ -14,7 +14,7 @@ import React from 'react'
 const getPost = async (slug, category, draft?) =>
   draft
     ? await fetchBlogPost(slug, category)
-    : await unstable_cache(fetchBlogPost, ['blogPost', `post-${slug}`])(slug, category)
+    : await unstable_cache(fetchBlogPost, ['blogPost', `post-${slug}`], { revalidate: 300 })(slug, category)
 
 const PostPage = async ({
   params,

@@ -74,19 +74,9 @@ export interface Config {
     callout: Callout;
     cta: Cta;
     downloadBlock: DownloadBlockType;
-    LightDarkImage: LightDarkImageBlock;
-    PayloadMedia: PayloadMediaBlock;
-    TableWithDrawers: TableWithDrawersBlock;
-    YouTube: YoutubeBlock;
-    Pill: PillBlock;
-    Arrow: ArrowBlock;
-    BulletList: BulletListBlock;
-    Card: CardBlock;
-    CardGroup: CardGroupBlock;
     cardGrid: CardGrid;
     caseStudyCards: CaseStudyCards;
     caseStudiesHighlight: CaseStudiesHighlight;
-    Upload: UploadBlock;
     caseStudyParallax: CaseStudyParallax;
     codeFeature: CodeFeature;
     content: Content;
@@ -100,43 +90,26 @@ export interface Config {
     mediaBlock: MediaBlock;
     mediaContent: MediaContent;
     mediaContentAccordion: MediaContentAccordion;
-    RestExamples: RestExamplesBlock;
     pricing: Pricing;
     reusableContentBlock: ReusableContentBlock;
-    Resource: ResourceBlock;
     slider: Slider;
     statement: Statement;
     steps: StepsBlock;
     stickyHighlights: StickyHighlights;
     exampleTabs: ExampleTabsBlock;
-    spotlight: SpotlightBlock;
-    video: VideoBlock;
-    br: BrBlock;
-    VideoDrawer: VideoDrawerBlock;
-    commandLine: CommandLineBlock;
-    command: Command;
-    link: Link;
-    templateCards: TemplateCardsBlock;
-    Banner: BannerBlock;
-    Code: CodeBlock;
     code: Code;
+    banner: Banner;
+    link: Link;
+    command: Command;
   };
   collections: {
     'case-studies': CaseStudy;
-    'community-help': CommunityHelp;
-    docs: Doc;
-    'docs-feedback': DocsFeedback;
     media: Media;
     pages: Page;
     posts: Post;
     categories: Category;
     'reusable-content': ReusableContent;
     users: User;
-    partners: Partner;
-    industries: Industry;
-    specialties: Specialty;
-    regions: Region;
-    budgets: Budget;
     forms: Form;
     'form-submissions': FormSubmission;
     redirects: Redirect;
@@ -147,29 +120,18 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    docs: {
-      guides: 'posts';
-    };
     categories: {
       posts: 'posts';
     };
   };
   collectionsSelect: {
     'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
-    'community-help': CommunityHelpSelect<false> | CommunityHelpSelect<true>;
-    docs: DocsSelect<false> | DocsSelect<true>;
-    'docs-feedback': DocsFeedbackSelect<false> | DocsFeedbackSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'reusable-content': ReusableContentSelect<false> | ReusableContentSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    partners: PartnersSelect<false> | PartnersSelect<true>;
-    industries: IndustriesSelect<false> | IndustriesSelect<true>;
-    specialties: SpecialtiesSelect<false> | SpecialtiesSelect<true>;
-    regions: RegionsSelect<false> | RegionsSelect<true>;
-    budgets: BudgetsSelect<false> | BudgetsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -186,15 +148,11 @@ export interface Config {
   globals: {
     footer: Footer;
     'main-menu': MainMenu;
-    'get-started': GetStarted;
-    'partner-program': PartnerProgram;
     topBar: TopBar;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
     'main-menu': MainMenuSelect<false> | MainMenuSelect<true>;
-    'get-started': GetStartedSelect<false> | GetStartedSelect<true>;
-    'partner-program': PartnerProgramSelect<false> | PartnerProgramSelect<true>;
     topBar: TopBarSelect<false> | TopBarSelect<true>;
   };
   locale: null;
@@ -693,7 +651,7 @@ export interface Page {
       placeholder?: string | null;
       description?: string | null;
     };
-    buttons?: (Link | Command)[] | null;
+    buttons?: unknown[] | null;
     secondaryButtons?:
       | {
           link: {
@@ -870,10 +828,6 @@ export interface Post {
     | ReusableContentBlock
   )[];
   relatedPosts?: (string | Post)[] | null;
-  /**
-   * Select the docs where you want to link to this guide. Be sure to select the correct version.
-   */
-  relatedDocs?: (string | Doc)[] | null;
   slug?: string | null;
   authorType?: ('guest' | 'team') | null;
   authors?: (string | User)[] | null;
@@ -885,10 +839,6 @@ export interface Post {
     website?: string | null;
   };
   publishedOn: string;
-  /**
-   * Paste this code into the docs to link to this post
-   */
-  addToDocs?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1006,7 +956,6 @@ export interface CaseStudy {
   };
   industry?: string | null;
   useCase?: string | null;
-  partner?: (string | null) | Partner;
   featuredImage: string | Media;
   layout?:
     | (
@@ -1049,170 +998,6 @@ export interface CaseStudy {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partners".
- */
-export interface Partner {
-  id: string;
-  name: string;
-  website: string;
-  email: string;
-  slug: string;
-  /**
-   * Set to inactive to hide this partner from the directory.
-   */
-  agency_status?: ('active' | 'inactive') | null;
-  hubspotID?: string | null;
-  logo: string | Media;
-  /**
-   * This field is managed by the Featured Partners field in the Partner Program collection
-   */
-  featured?: boolean | null;
-  topContributor?: boolean | null;
-  content: {
-    /**
-     * 1600 x 800px recommended
-     */
-    bannerImage: string | Media;
-    overview: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    services: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    idealProject: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    };
-    caseStudy?: (string | null) | CaseStudy;
-    /**
-     * Contributions to Payload. Must be a valid GitHub issue, pull request, or discussion URL from a repo in the 'payloadcms' organization.
-     */
-    contributions?:
-      | {
-          type: 'discussion' | 'pr' | 'issue';
-          repo: string;
-          number: number;
-          id?: string | null;
-        }[]
-      | null;
-    projects?:
-      | {
-          year: number;
-          name: string;
-          link: string;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  city: string;
-  regions: (string | Region)[];
-  specialties: (string | Specialty)[];
-  budgets: (string | Budget)[];
-  industries: (string | Industry)[];
-  social?:
-    | {
-        platform: 'linkedin' | 'twitter' | 'facebook' | 'instagram' | 'youtube' | 'github';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "regions".
- */
-export interface Region {
-  id: string;
-  name: string;
-  /**
-   * Must contain only lowercase letters, numbers, hyphens, and underscores
-   */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "specialties".
- */
-export interface Specialty {
-  id: string;
-  name: string;
-  /**
-   * Must contain only lowercase letters, numbers, hyphens, and underscores
-   */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "budgets".
- */
-export interface Budget {
-  id: string;
-  name: string;
-  /**
-   * Must contain only lowercase letters, numbers, hyphens, and underscores
-   */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "industries".
- */
-export interface Industry {
-  id: string;
-  name: string;
-  /**
-   * Must contain only lowercase letters, numbers, hyphens, and underscores
-   */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2846,58 +2631,6 @@ export interface StickyHighlights {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docs".
- */
-export interface Doc {
-  id: string;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  title: string;
-  description?: string | null;
-  keywords?: string | null;
-  headings?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  path?: string | null;
-  topic: string;
-  /**
-   * The topic group is displayed on the sidebar, but is not part of the URL
-   */
-  topicGroup: string;
-  slug: string;
-  label?: string | null;
-  order?: number | null;
-  version: string;
-  mdx?: string | null;
-  guides?: {
-    docs?: (string | Post)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -2928,6 +2661,68 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DownloadBlockType".
+ */
+export interface DownloadBlockType {
+  downloads?:
+    | {
+        name: string;
+        /**
+         * The file to download
+         */
+        file: string | Media;
+        /**
+         * Thumbnail for the download. Defaults to file for images
+         */
+        thumbnail?: (string | null) | Media;
+        thumbnailAppearance: 'cover' | 'contain';
+        background: 'auto' | 'light' | 'dark';
+        copyToClipboard?: boolean | null;
+        copyToClipboardText?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'downloadBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banner".
+ */
+export interface Banner {
+  bannerFields: {
+    settings?: {
+      /**
+       * Leave blank for system default
+       */
+      theme?: ('light' | 'dark') | null;
+      background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
+    };
+    type?: ('default' | 'success' | 'warning' | 'error') | null;
+    addCheckmark?: boolean | null;
+    content: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2971,437 +2766,6 @@ export interface Command {
   id?: string | null;
   blockName?: string | null;
   blockType: 'command';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "DownloadBlockType".
- */
-export interface DownloadBlockType {
-  downloads?:
-    | {
-        name: string;
-        /**
-         * The file to download
-         */
-        file: string | Media;
-        /**
-         * Thumbnail for the download. Defaults to file for images
-         */
-        thumbnail?: (string | null) | Media;
-        thumbnailAppearance: 'cover' | 'contain';
-        background: 'auto' | 'light' | 'dark';
-        copyToClipboard?: boolean | null;
-        copyToClipboardText?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'downloadBlock';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LightDarkImageBlock".
- */
-export interface LightDarkImageBlock {
-  srcLight: string;
-  srcDark: string;
-  alt?: string | null;
-  caption?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'LightDarkImage';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PayloadMediaBlock".
- */
-export interface PayloadMediaBlock {
-  media: string | Media;
-  caption?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'PayloadMedia';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TableWithDrawersBlock".
- */
-export interface TableWithDrawersBlock {
-  columns?: string[] | null;
-  rows?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'TableWithDrawers';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "YoutubeBlock".
- */
-export interface YoutubeBlock {
-  id?: string | null;
-  title?: string | null;
-  blockName?: string | null;
-  blockType: 'YouTube';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "PillBlock".
- */
-export interface PillBlock {
-  /**
-   * E.g., "1. DEFINE WORK" or "2. QUEUE JOBS"
-   */
-  text: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Pill';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArrowBlock".
- */
-export interface ArrowBlock {
-  direction: 'down' | 'up' | 'left' | 'right';
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Arrow';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BulletListBlock".
- */
-export interface BulletListBlock {
-  items: {
-    text: string;
-    icon: 'check' | 'x';
-    id?: string | null;
-  }[];
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'BulletList';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CardBlock".
- */
-export interface CardBlock {
-  title: string;
-  description: string;
-  /**
-   * URL the card links to, e.g. /docs/authentication/overview
-   */
-  link: string;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Card';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CardGroupBlock".
- */
-export interface CardGroupBlock {
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'CardGroup';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "UploadBlock".
- */
-export interface UploadBlock {
-  src: string;
-  alt?: string | null;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Upload';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RestExamplesBlock".
- */
-export interface RestExamplesBlock {
-  data?:
-    | {
-        operation?: string | null;
-        method?: string | null;
-        path?: string | null;
-        description?: string | null;
-        example?: {
-          slug?: string | null;
-          req?:
-            | {
-                [k: string]: unknown;
-              }
-            | unknown[]
-            | string
-            | number
-            | boolean
-            | null;
-          res?:
-            | {
-                [k: string]: unknown;
-              }
-            | unknown[]
-            | string
-            | number
-            | boolean
-            | null;
-          drawerContent?: {
-            root: {
-              type: string;
-              children: {
-                type: any;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          } | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'RestExamples';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ResourceBlock".
- */
-export interface ResourceBlock {
-  post?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Resource';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "SpotlightBlock".
- */
-export interface SpotlightBlock {
-  element?: ('h1' | 'h2' | 'h3' | 'p') | null;
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'spotlight';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoBlock".
- */
-export interface VideoBlock {
-  url?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'video';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BrBlock".
- */
-export interface BrBlock {
-  ignore?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'br';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoDrawerBlock".
- */
-export interface VideoDrawerBlock {
-  id: string | null;
-  label: string;
-  drawerTitle: string;
-  blockName?: string | null;
-  blockType: 'VideoDrawer';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CommandLineBlock".
- */
-export interface CommandLineBlock {
-  command?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'commandLine';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TemplateCardsBlock".
- */
-export interface TemplateCardsBlock {
-  templates?:
-    | {
-        name: string;
-        description: string;
-        image: string;
-        slug: string;
-        order: number;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'templateCards';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  type?: ('alert' | 'default' | 'error' | 'info' | 'success' | 'warning') | null;
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CodeBlock".
- */
-export interface CodeBlock {
-  language?:
-    | (
-        | 'bash'
-        | 'css'
-        | 'dockerfile'
-        | 'env'
-        | 'graphql'
-        | 'html'
-        | 'http'
-        | 'js'
-        | 'json'
-        | 'jsx'
-        | 'plaintext'
-        | 'scss'
-        | 'sh'
-        | 'text'
-        | 'ts'
-        | 'tsx'
-        | 'vue'
-        | 'yaml'
-        | 'yml'
-      )
-    | null;
-  code?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'Code';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "community-help".
- */
-export interface CommunityHelp {
-  id: string;
-  title?: string | null;
-  communityHelpType?: ('discord' | 'github') | null;
-  githubID?: string | null;
-  discordID?: string | null;
-  communityHelpJSON:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  introDescription?: string | null;
-  slug?: string | null;
-  helpful?: boolean | null;
-  relatedDocs?: (string | Doc)[] | null;
-  threadCreatedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docs-feedback".
- */
-export interface DocsFeedback {
-  id: string;
-  /**
-   * The docs page key, e.g. "getting-started/what-is-payload".
-   */
-  path: string;
-  helpful: number;
-  notHelpful: number;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3504,18 +2868,6 @@ export interface PayloadLockedDocument {
         value: string | CaseStudy;
       } | null)
     | ({
-        relationTo: 'community-help';
-        value: string | CommunityHelp;
-      } | null)
-    | ({
-        relationTo: 'docs';
-        value: string | Doc;
-      } | null)
-    | ({
-        relationTo: 'docs-feedback';
-        value: string | DocsFeedback;
-      } | null)
-    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -3538,26 +2890,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
-      } | null)
-    | ({
-        relationTo: 'partners';
-        value: string | Partner;
-      } | null)
-    | ({
-        relationTo: 'industries';
-        value: string | Industry;
-      } | null)
-    | ({
-        relationTo: 'specialties';
-        value: string | Specialty;
-      } | null)
-    | ({
-        relationTo: 'regions';
-        value: string | Region;
-      } | null)
-    | ({
-        relationTo: 'budgets';
-        value: string | Budget;
       } | null)
     | ({
         relationTo: 'forms';
@@ -3636,7 +2968,6 @@ export interface CaseStudiesSelect<T extends boolean = true> {
   introContent?: T;
   industry?: T;
   useCase?: T;
-  partner?: T;
   featuredImage?: T;
   layout?: T | {};
   slug?: T;
@@ -3651,57 +2982,6 @@ export interface CaseStudiesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "community-help_select".
- */
-export interface CommunityHelpSelect<T extends boolean = true> {
-  title?: T;
-  communityHelpType?: T;
-  githubID?: T;
-  discordID?: T;
-  communityHelpJSON?: T;
-  introDescription?: T;
-  slug?: T;
-  helpful?: T;
-  relatedDocs?: T;
-  threadCreatedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docs_select".
- */
-export interface DocsSelect<T extends boolean = true> {
-  content?: T;
-  title?: T;
-  description?: T;
-  keywords?: T;
-  headings?: T;
-  path?: T;
-  topic?: T;
-  topicGroup?: T;
-  slug?: T;
-  label?: T;
-  order?: T;
-  version?: T;
-  mdx?: T;
-  guides?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "docs-feedback_select".
- */
-export interface DocsFeedbackSelect<T extends boolean = true> {
-  path?: T;
-  helpful?: T;
-  notHelpful?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3923,7 +3203,6 @@ export interface PostsSelect<T extends boolean = true> {
             };
       };
   relatedPosts?: T;
-  relatedDocs?: T;
   slug?: T;
   authorType?: T;
   authors?: T;
@@ -3937,7 +3216,6 @@ export interface PostsSelect<T extends boolean = true> {
         website?: T;
       };
   publishedOn?: T;
-  addToDocs?: T;
   meta?:
     | T
     | {
@@ -4020,101 +3298,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partners_select".
- */
-export interface PartnersSelect<T extends boolean = true> {
-  name?: T;
-  website?: T;
-  email?: T;
-  slug?: T;
-  agency_status?: T;
-  hubspotID?: T;
-  logo?: T;
-  featured?: T;
-  topContributor?: T;
-  content?:
-    | T
-    | {
-        bannerImage?: T;
-        overview?: T;
-        services?: T;
-        idealProject?: T;
-        caseStudy?: T;
-        contributions?:
-          | T
-          | {
-              type?: T;
-              repo?: T;
-              number?: T;
-              id?: T;
-            };
-        projects?:
-          | T
-          | {
-              year?: T;
-              name?: T;
-              link?: T;
-              id?: T;
-            };
-      };
-  city?: T;
-  regions?: T;
-  specialties?: T;
-  budgets?: T;
-  industries?: T;
-  social?:
-    | T
-    | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "industries_select".
- */
-export interface IndustriesSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "specialties_select".
- */
-export interface SpecialtiesSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "regions_select".
- */
-export interface RegionsSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "budgets_select".
- */
-export interface BudgetsSelect<T extends boolean = true> {
-  name?: T;
-  value?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4563,229 +3746,6 @@ export interface MainMenu {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "get-started".
- */
-export interface GetStarted {
-  id: string;
-  heading?: string | null;
-  tabs?:
-    | {
-        label: string;
-        content: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        };
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'richTextBlock';
-      }[]
-    | null;
-  sidebar?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  sidebarLinks?:
-    | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: string | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: string | Post;
-              } | null)
-            | ({
-                relationTo: 'case-studies';
-                value: string | CaseStudy;
-              } | null);
-          url?: string | null;
-          label: string;
-          customId?: string | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partner-program".
- */
-export interface PartnerProgram {
-  id: string;
-  /**
-   * Select the form that should be used for the contact form.
-   */
-  contactForm: string | Form;
-  hero?: {
-    richText?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    breadcrumbBarLinks?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: string | Page;
-                } | null)
-              | ({
-                  relationTo: 'posts';
-                  value: string | Post;
-                } | null)
-              | ({
-                  relationTo: 'case-studies';
-                  value: string | CaseStudy;
-                } | null);
-            url?: string | null;
-            label: string;
-            customId?: string | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-    heroLinks?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: string | Page;
-                } | null)
-              | ({
-                  relationTo: 'posts';
-                  value: string | Post;
-                } | null)
-              | ({
-                  relationTo: 'case-studies';
-                  value: string | CaseStudy;
-                } | null);
-            url?: string | null;
-            label: string;
-            customId?: string | null;
-          };
-          id?: string | null;
-        }[]
-      | null;
-  };
-  featuredPartners: {
-    description?: string | null;
-    partners: (string | Partner)[];
-  };
-  contentBlocks?: {
-    beforeDirectory?:
-      | (
-          | Callout
-          | Cta
-          | CardGrid
-          | CaseStudyCards
-          | CaseStudiesHighlight
-          | CaseStudyParallax
-          | CodeFeature
-          | Content
-          | ContentGrid
-          | FormBlock
-          | HoverCards
-          | HoverHighlights
-          | LinkGrid
-          | LogoGrid
-          | MediaBlock
-          | MediaContent
-          | MediaContentAccordion
-          | Pricing
-          | ReusableContentBlock
-          | Slider
-          | Statement
-          | StepsBlock
-          | StickyHighlights
-          | ExampleTabsBlock
-        )[]
-      | null;
-    afterDirectory?:
-      | (
-          | Callout
-          | Cta
-          | CardGrid
-          | CaseStudyCards
-          | CaseStudiesHighlight
-          | CaseStudyParallax
-          | CodeFeature
-          | Content
-          | ContentGrid
-          | FormBlock
-          | HoverCards
-          | HoverHighlights
-          | LinkGrid
-          | LogoGrid
-          | MediaBlock
-          | MediaContent
-          | MediaContentAccordion
-          | Pricing
-          | ReusableContentBlock
-          | Slider
-          | Statement
-          | StepsBlock
-          | StickyHighlights
-          | ExampleTabsBlock
-        )[]
-      | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "topBar".
  */
 export interface TopBar {
@@ -4954,108 +3914,6 @@ export interface MainMenuSelect<T extends boolean = true> {
         url?: T;
         label?: T;
         customId?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "get-started_select".
- */
-export interface GetStartedSelect<T extends boolean = true> {
-  heading?: T;
-  tabs?:
-    | T
-    | {
-        richTextBlock?:
-          | T
-          | {
-              label?: T;
-              content?: T;
-              id?: T;
-              blockName?: T;
-            };
-      };
-  sidebar?: T;
-  sidebarLinks?:
-    | T
-    | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              customId?: T;
-            };
-        id?: T;
-      };
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partner-program_select".
- */
-export interface PartnerProgramSelect<T extends boolean = true> {
-  contactForm?: T;
-  hero?:
-    | T
-    | {
-        richText?: T;
-        breadcrumbBarLinks?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    customId?: T;
-                  };
-              id?: T;
-            };
-        heroLinks?:
-          | T
-          | {
-              link?:
-                | T
-                | {
-                    type?: T;
-                    newTab?: T;
-                    reference?: T;
-                    url?: T;
-                    label?: T;
-                    customId?: T;
-                  };
-              id?: T;
-            };
-      };
-  featuredPartners?:
-    | T
-    | {
-        description?: T;
-        partners?: T;
-      };
-  contentBlocks?:
-    | T
-    | {
-        beforeDirectory?: T | {};
-        afterDirectory?: T | {};
       };
   updatedAt?: T;
   createdAt?: T;

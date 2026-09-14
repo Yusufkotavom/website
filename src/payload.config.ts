@@ -23,6 +23,7 @@ import path from 'path'
 import { buildConfig, type TextField } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Banner } from './blocks/Banner'
 import { BlogContent } from './blocks/BlogContent'
 import { BlogMarkdown } from './blocks/BlogMarkdown'
 import { Callout } from './blocks/Callout'
@@ -54,41 +55,15 @@ import { Steps } from './blocks/Steps'
 import { StickyHighlights } from './blocks/StickyHighlights'
 import { CaseStudies } from './collections/CaseStudies'
 import { Categories } from './collections/Categories'
-import { CommunityHelp } from './collections/CommunityHelp'
-import { Docs } from './collections/Docs'
-import { ArrowBlock } from './collections/Docs/blocks/arrow'
-import { BannerBlock } from './collections/Docs/blocks/banner'
-import { BulletListBlock } from './collections/Docs/blocks/bulletList'
-import { CardBlock } from './collections/Docs/blocks/card'
-import { CardGroupBlock } from './collections/Docs/blocks/cardGroup'
-import { CodeBlock } from './collections/Docs/blocks/code'
-import { LightDarkImageBlock } from './collections/Docs/blocks/lightDarkImage'
-import { PayloadMediaBlock } from './collections/Docs/blocks/payloadMedia'
-import { PillBlock } from './collections/Docs/blocks/pill'
-import { ResourceBlock } from './collections/Docs/blocks/resource'
-import { RestExamplesBlock } from './collections/Docs/blocks/restExamples'
-import { TableWithDrawersBlock } from './collections/Docs/blocks/tableWithDrawers'
-import { UploadBlock } from './collections/Docs/blocks/upload'
-import { VideoDrawerBlock } from './collections/Docs/blocks/VideoDrawer'
-import { YoutubeBlock } from './collections/Docs/blocks/youtube'
-import { DocsFeedback } from './collections/DocsFeedback'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
-import { Budgets, Industries, Regions, Specialties } from './collections/PartnerFilters'
-import { Partners } from './collections/Partners'
 import { Posts } from './collections/Posts'
 import { ReusableContent } from './collections/ReusableContent'
 import { Users } from './collections/Users'
 import { Footer } from './globals/Footer'
-import { GetStarted } from './globals/GetStarted'
 import { MainMenu } from './globals/MainMenu'
-import { PartnerProgram } from './globals/PartnerProgram'
 import { TopBar } from './globals/TopBar'
 import { opsCounterPlugin } from './plugins/opsCounter'
-import createReleasePost from './scripts/createReleasePost'
-import createReleasePostFromAdmin from './scripts/createReleasePostFromAdmin'
-import redeployWebsite from './scripts/redeployWebsite'
-import { refreshMdxToLexical, syncDocs } from './scripts/syncDocs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -103,14 +78,6 @@ const sendgridConfig = {
 
 export default buildConfig({
   admin: {
-    autoLogin: {
-      email: 'dev2@payloadcms.com',
-      password: 'test',
-    },
-    components: {
-      afterNavLinks: ['@root/components/AfterNavActions'],
-      beforeDashboard: ['@root/components/BeforeDashboard'],
-    },
     importMap: {
       baseDir: dirname,
     },
@@ -123,19 +90,9 @@ export default buildConfig({
     Callout,
     CallToAction,
     DownloadBlock,
-    LightDarkImageBlock,
-    PayloadMediaBlock,
-    TableWithDrawersBlock,
-    YoutubeBlock,
-    PillBlock,
-    ArrowBlock,
-    BulletListBlock,
-    CardBlock,
-    CardGroupBlock,
     CardGrid,
     CaseStudyCards,
     CaseStudiesHighlight,
-    UploadBlock,
     CaseStudyParallax,
     CodeFeature,
     Content,
@@ -149,169 +106,29 @@ export default buildConfig({
     MediaBlock,
     MediaContent,
     MediaContentAccordion,
-    RestExamplesBlock,
     Pricing,
     ReusableContentBlock,
-    ResourceBlock,
     Slider,
     Statement,
     Steps,
     StickyHighlights,
     ExampleTabs,
-    {
-      slug: 'spotlight',
-      fields: [
-        {
-          name: 'element',
-          type: 'select',
-          options: [
-            {
-              label: 'H1',
-              value: 'h1',
-            },
-            {
-              label: 'H2',
-              value: 'h2',
-            },
-            {
-              label: 'H3',
-              value: 'h3',
-            },
-            {
-              label: 'Paragraph',
-              value: 'p',
-            },
-          ],
-        },
-        {
-          name: 'richText',
-          type: 'richText',
-          editor: lexicalEditor(),
-        },
-      ],
-      interfaceName: 'SpotlightBlock',
-    },
-    {
-      slug: 'video',
-      fields: [
-        {
-          name: 'url',
-          type: 'text',
-        },
-      ],
-      interfaceName: 'VideoBlock',
-    },
-    {
-      slug: 'br',
-      fields: [
-        {
-          name: 'ignore',
-          type: 'text',
-        },
-      ],
-
-      interfaceName: 'BrBlock',
-    },
-    VideoDrawerBlock,
-    {
-      slug: 'commandLine',
-      fields: [
-        {
-          name: 'command',
-          type: 'text',
-        },
-      ],
-      interfaceName: 'CommandLineBlock',
-    },
-    {
-      slug: 'command',
-      fields: [
-        {
-          name: 'command',
-          type: 'text',
-          required: true,
-        },
-      ],
-      labels: {
-        plural: 'Command Lines',
-        singular: 'Command Line',
-      },
-    },
+    Code,
+    Banner,
+    // Link/command button blocks used by the "three" hero CTA (see fields/hero.ts).
     {
       slug: 'link',
       fields: [link()],
-      labels: {
-        plural: 'Links',
-        singular: 'Link',
-      },
+      labels: { plural: 'Links', singular: 'Link' },
     },
     {
-      slug: 'templateCards',
-      fields: [
-        {
-          name: 'templates',
-          type: 'array',
-          fields: [
-            {
-              name: 'name',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'description',
-              type: 'textarea',
-              required: true,
-            },
-            {
-              name: 'image',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'slug',
-              type: 'text',
-              required: true,
-            },
-            {
-              name: 'order',
-              type: 'number',
-              required: true,
-            },
-          ],
-          labels: {
-            plural: 'Templates',
-            singular: 'Template',
-          },
-        },
-      ],
-      interfaceName: 'TemplateCardsBlock',
+      slug: 'command',
+      fields: [{ name: 'command', type: 'text', required: true }],
+      labels: { plural: 'Commands', singular: 'Command' },
     },
-    BannerBlock,
-    CodeBlock,
-    Code,
   ],
-  collections: [
-    CaseStudies,
-    CommunityHelp,
-    Docs,
-    DocsFeedback,
-    Media,
-    Pages,
-    Posts,
-    Categories,
-    ReusableContent,
-    Users,
-    Partners,
-    Industries,
-    Specialties,
-    Regions,
-    Budgets,
-  ],
-  cors: [
-    process.env.PAYLOAD_PUBLIC_APP_URL || '',
-    'https://payloadcms.com',
-    'https://discord.com/api',
-  ].filter(Boolean),
+  collections: [CaseStudies, Media, Pages, Posts, Categories, ReusableContent, Users],
+  cors: [process.env.PAYLOAD_PUBLIC_APP_URL || ''].filter(Boolean),
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
@@ -362,53 +179,16 @@ export default buildConfig({
       LabelFeature(),
       LargeBodyFeature(),
       BlocksFeature({
-        blocks: [
-          'spotlight',
-          'video',
-          'br',
-          'Banner',
-          'VideoDrawer',
-          'templateCards',
-          'Code',
-          'downloadBlock',
-          'commandLine',
-        ],
+        blocks: ['downloadBlock'],
       }),
     ],
   }),
   email: nodemailerAdapter({
-    defaultFromAddress: 'info@payloadcms.com',
-    defaultFromName: 'Payload',
+    defaultFromAddress: 'no-reply@kotacom.id',
+    defaultFromName: 'Kotacom',
     ...sendgridConfig,
   }),
-  endpoints: [
-    {
-      handler: syncDocs,
-      method: 'get',
-      path: '/sync/docs',
-    },
-    {
-      handler: redeployWebsite,
-      method: 'post',
-      path: '/redeploy/website',
-    },
-    {
-      handler: refreshMdxToLexical,
-      method: 'get',
-      path: '/refresh/mdx-to-lexical',
-    },
-    {
-      handler: createReleasePost,
-      method: 'post',
-      path: '/create-release-post',
-    },
-    {
-      handler: createReleasePostFromAdmin,
-      method: 'post',
-      path: '/create-release-post-from-admin',
-    },
-  ],
-  globals: [Footer, MainMenu, GetStarted, PartnerProgram, TopBar],
+  globals: [Footer, MainMenu, TopBar],
   graphQL: {
     disablePlaygroundInProduction: false,
   },
@@ -506,10 +286,7 @@ export default buildConfig({
                 const { form, submissionData: submissionDataFromDoc } = doc
                 const portalID = process.env.NEXT_PRIVATE_HUBSPOT_PORTAL_KEY
 
-                // Remove partnerId from HubSpot submission (toEmail already populated by beforeChange hook)
-                const submissionData = submissionDataFromDoc.filter(
-                  (field) => field.field !== 'partnerId',
-                )
+                const submissionData = submissionDataFromDoc
 
                 const data = {
                   context: {
@@ -545,36 +322,7 @@ export default buildConfig({
             },
           ],
           beforeChange: [
-            async ({ data, req }) => {
-              // Look up partner email if partnerId is present and populate toEmail field
-              // This runs before email notifications are sent
-              const partnerIdField = data?.submissionData?.find(
-                (field) => field.field === 'partnerId',
-              )
-
-              if (partnerIdField?.value) {
-                try {
-                  const partner = await req.payload.findByID({
-                    id: partnerIdField.value,
-                    collection: 'partners',
-                    overrideAccess: true,
-                  })
-
-                  if (partner?.email) {
-                    // Add toEmail field to submissionData for email notifications
-                    data.submissionData.push({
-                      field: 'toEmail',
-                      value: partner.email,
-                    })
-                  }
-                } catch (err) {
-                  req.payload.logger.error({
-                    err,
-                    msg: 'Failed to lookup partner email',
-                  })
-                }
-              }
-
+            async ({ data }) => {
               return data
             },
           ],
@@ -583,7 +331,6 @@ export default buildConfig({
     }),
     seoPlugin({
       collections: ['case-studies', 'pages', 'posts'],
-      globals: ['get-started'],
       uploadsCollection: 'media',
     }),
     nestedDocsPlugin({

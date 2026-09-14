@@ -54,11 +54,6 @@ export const CaseStudies: CollectionConfig = {
       ],
     },
     {
-      name: 'partner',
-      type: 'relationship',
-      relationTo: 'partners',
-    },
-    {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',

@@ -1,24 +1,18 @@
 import type { MainMenu } from '@root/payload-types'
 
-import { Avatar } from '@components/Avatar/index'
 import { Gutter } from '@components/Gutter/index'
 import { RichText } from '@components/RichText/index'
-import { GitHubIcon } from '@root/graphics/GitHub/index'
 import { ArrowIcon } from '@root/icons/ArrowIcon/index'
-import { useAuth } from '@root/providers/Auth/index'
 import { useHeaderObserver } from '@root/providers/HeaderIntersectionObserver/index'
-import { useStarCount } from '@root/utilities/use-star-count'
 import Link from 'next/link'
 import * as React from 'react'
 
 import { FullLogo } from '../../../graphics/FullLogo/index'
 import { CMSLink } from '../../CMSLink/index'
-import { DocSearch } from '../Docsearch/index'
 import classes from './index.module.scss'
 
 type DesktopNavType = { hideBackground?: boolean } & Pick<MainMenu, 'menuCta' | 'tabs'>
 export const DesktopNav: React.FC<DesktopNavType> = ({ hideBackground, menuCta, tabs }) => {
-  const { user } = useAuth()
   const [activeTab, setActiveTab] = React.useState<number | undefined>()
   const [activeDropdown, setActiveDropdown] = React.useState<boolean | undefined>(false)
   const [backgroundStyles, setBackgroundStyles] = React.useState<any>({
@@ -31,8 +25,6 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ hideBackground, menuCta, 
 
   const menuItemRefs = [] as (HTMLButtonElement | null)[]
   const dropdownMenuRefs = [] as (HTMLDivElement | null)[]
-
-  const starCount = useStarCount()
 
   React.useEffect(() => {
     if (activeTab !== undefined) {
@@ -268,30 +260,8 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ hideBackground, menuCta, 
             </div>
           </div>
           <div className={'cols-4'}>
-            <div
-              className={[classes.secondaryNavItems, user !== undefined && classes.show].join(' ')}
-            >
-              <a
-                aria-label="Payload's GitHub"
-                className={classes.github}
-                href="https://github.com/payloadcms/payload"
-                rel="noreferrer"
-                target="_blank"
-              >
-                <GitHubIcon />
-                {starCount}
-              </a>
-              {user ? (
-                <Avatar className={classes.avatar} />
-              ) : (
-                <>
-                  <Link href="/login" prefetch={false}>
-                    Login
-                  </Link>
-                  {menuCta && menuCta.label && <CMSLink {...menuCta} className={classes.button} />}
-                </>
-              )}
-              <DocSearch />
+            <div className={classes.secondaryNavItems}>
+              {menuCta && menuCta.label && <CMSLink {...menuCta} className={classes.button} />}
             </div>
           </div>
         </div>

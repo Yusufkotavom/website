@@ -66,9 +66,8 @@ export const ThreeHero: React.FC<
                 Array.isArray(buttons) &&
                 buttons.length > 0 && (
                   <div className={classes.linksWrapper}>
-                    {Array.isArray(buttons) &&
-                      buttons.map((button, i) => {
-                        if (button.blockType === 'command') {
+                    {(buttons as any[]).map((button, i) => {
+                      if (button.blockType === 'command') {
                           return (
                             <CreatePayloadApp
                               background={false}

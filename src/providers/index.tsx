@@ -9,7 +9,6 @@ import { HeaderIntersectionObserver } from '@root/providers/HeaderIntersectionOb
 import React from 'react'
 import { CookiesProvider } from 'react-cookie'
 
-import { AuthProvider } from './Auth/index'
 import { ComputedCSSValuesProvider } from './ComputedCSSValues/index'
 import { PageTransition } from './PageTransition/index'
 import { ThemePreferenceProvider } from './Theme/index'
@@ -20,8 +19,7 @@ export const Providers: React.FC<{
 }> = ({ children }) => {
   return (
     <CookiesProvider>
-      <AuthProvider>
-        <ScrollInfoProvider>
+      <ScrollInfoProvider>
           <MouseInfoProvider>
             <WindowInfoProvider
               breakpoints={{
@@ -72,7 +70,6 @@ export const Providers: React.FC<{
             </WindowInfoProvider>
           </MouseInfoProvider>
         </ScrollInfoProvider>
-      </AuthProvider>
-    </CookiesProvider>
+      </CookiesProvider>
   )
 }

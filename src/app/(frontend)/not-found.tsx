@@ -11,7 +11,7 @@ export default async function NotFound() {
 
   const getGlobals = draft
     ? fetchGlobals
-    : unstable_cache(fetchGlobals, ['globals', 'mainMenu', 'footer'])
+    : unstable_cache(fetchGlobals, ['globals', 'mainMenu', 'footer'], { revalidate: 300 })
 
   const { footer, mainMenu } = await getGlobals()
 

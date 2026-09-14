@@ -13,7 +13,9 @@ import { draftMode } from 'next/headers'
 import React from 'react'
 
 const getPage = async (slug, draft?) =>
-  draft ? fetchPage(slug) : unstable_cache(fetchPage, [`page-${slug}`])(slug)
+  draft
+    ? fetchPage(slug)
+    : unstable_cache(fetchPage, [`page-${slug}`], { revalidate: 300 })(slug)
 
 const Page = async ({
   params,

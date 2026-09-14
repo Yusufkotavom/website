@@ -33,7 +33,7 @@ export default async ({
   // 1. try it as a category archive
   const archive = draft
     ? await fetchArchive(category, draft)
-    : await unstable_cache(fetchArchive, [`${category}-archive`])(category, draft)
+    : await unstable_cache(fetchArchive, [`${category}-archive`], { revalidate: 300 })(category, draft)
 
   if (archive?.posts?.docs) {
     return <Archive category={category} />
@@ -42,7 +42,7 @@ export default async ({
   // 2. otherwise treat the segment as a post slug
   const post = draft
     ? await fetchPostBySlug(category)
-    : await unstable_cache(fetchPostBySlug, [`post-${category}`])(category)
+    : await unstable_cache(fetchPostBySlug, [`post-${category}`], { revalidate: 300 })(category)
 
   if (!post) {
     notFound()

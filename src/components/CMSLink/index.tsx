@@ -70,7 +70,9 @@ const generateHref = (args: GenerateSlugType): string => {
     }
 
     if (reference.relationTo === 'posts') {
-      return `/blog/${reference.value.slug}`
+      // Flat permalink, matching formatPagePath() and the /posts/<slug> route.
+      // There is no /blog route; /blog and /blog/<slug> redirect into /posts.
+      return `/posts/${reference.value.slug}`
     }
 
     if (reference.relationTo === 'case_studies') {

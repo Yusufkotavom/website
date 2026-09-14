@@ -6,18 +6,22 @@ import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import React from 'react'
 
-// Rendered on demand rather than prerendered. `next build` would otherwise query
-// Payload/Mongo for every page, and the build environment (Dokploy builder) cannot
-// reach `payload-mongo` — a hard DB dependency at build time turns every redeploy
-// into a failed build. Request-time rendering also means content edits show up
-// without a rebuild.
+// Rendered on demand; the DB result of every Payload query is what gets cached.
+//
+// `next build` must not depend on the database: the Dokploy builder runs outside
+// `dokploy-network` and cannot reach `payload-mongo`, so prerendering DB-backed pages
+// at build time fails the build. Routes therefore stay dynamic, and caching happens at
+// the *data* layer instead — each loader is wrapped in `unstable_cache({ revalidate })`
+// (see the pages below), which gives ISR behaviour (cached HTML served, background
+// regeneration, instant invalidation on admin edits via revalidatePath/revalidateTag)
+// without ever querying Mongo during the build.
 export const dynamic = 'force-dynamic'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const { isEnabled: draft } = await draftMode()
   const getGlobals = draft
     ? fetchGlobals
-    : unstable_cache(fetchGlobals, ['globals', 'mainMenu', 'footer'])
+    : unstable_cache(fetchGlobals, ['globals', 'mainMenu', 'footer'], { revalidate: 300 })
 
   // Build-safe: during `next build` the DB may be unreachable (the Dokploy builder
   // cannot join dokploy-network). Fall back to empty globals so the build completes;

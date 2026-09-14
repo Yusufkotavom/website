@@ -28,14 +28,8 @@
       "@blocks/*": [
         "./src/components/blocks/*"
       ],
-      "@cloud/*": [
-        "./src/app/(frontend)/(cloud)/cloud/*"
-      ],
       "@components/*": [
         "./src/components/*"
-      ],
-      "@docs/*": [
-        "./src/docs/*"
       ],
       "@forms/*": [
         "./src/forms/*"
@@ -91,6 +85,10 @@
   ],
   "exclude": [
     "node_modules",
-    "pages__old"
+    "pages__old",
+    "src/scripts/seed.ts",
+    "src/scripts/test-seed.ts",
+    "src/scripts/env-check.ts",
+    "src/scripts/getpayload-test.ts"
   ]
 }
