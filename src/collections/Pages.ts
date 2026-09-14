@@ -39,6 +39,14 @@ export const Pages: CollectionConfig = {
     },
     fullTitle,
     {
+      name: 'description',
+      type: 'textarea',
+      label: 'Ringkasan halaman',
+      admin: {
+        description: 'Dipakai sebagai deskripsi meta & ringkasan bila kolom SEO dikosongkan.',
+      },
+    },
+    {
       name: 'noindex',
       type: 'checkbox',
       admin: {

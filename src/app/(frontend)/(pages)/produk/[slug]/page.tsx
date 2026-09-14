@@ -5,7 +5,7 @@ import { JsonLd } from '@components/SEO/JsonLd'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { fetchProduct, fetchProducts } from '@data'
-import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { buildMetadata } from '@root/seo/metadata'
 import { breadcrumbSchema, productSchema } from '@root/seo/schema'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -77,22 +77,14 @@ export async function generateMetadata({
   const { slug } = await params
   const product = await getProduct(slug, draft)
 
-  const ogImage =
-    typeof product?.featuredImage === 'object' &&
-    product?.featuredImage !== null &&
-    'url' in product.featuredImage &&
-    product.featuredImage.url
-
-  return {
-    alternates: { canonical: `/produk/${slug}` },
-    description: product?.shortDescription ?? undefined,
-    openGraph: mergeOpenGraph({
-      description: product?.shortDescription ?? undefined,
-      images: ogImage ? [{ url: ogImage }] : undefined,
-      title: product?.title ?? undefined,
-      url: `/produk/${slug}`,
-    }),
-    title: product?.title ?? undefined,
-    twitter: { card: 'summary_large_image' },
-  }
+  return buildMetadata({
+    kind: (product?.offeringType as never) || 'product',
+    path: `/produk/${slug}`,
+    title: product?.title,
+    metaTitle: product?.meta?.title,
+    metaDescription: product?.meta?.description,
+    excerpt: product?.shortDescription,
+    metaImage: product?.meta?.image,
+    featuredImage: product?.featuredImage,
+  })
 }

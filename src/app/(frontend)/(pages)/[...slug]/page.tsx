@@ -1,5 +1,4 @@
 import { buildSafe } from '@root/utilities/buildSafe'
-import type { Media } from '@root/payload-types'
 import type { Metadata } from 'next'
 
 import { Hero } from '@components/Hero/index'
@@ -8,7 +7,7 @@ import { PayloadRedirects } from '@components/PayloadRedirects'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave'
 import { RenderBlocks } from '@components/RenderBlocks/index'
 import { fetchPage, fetchPages } from '@data'
-import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { buildMetadata } from '@root/seo/metadata'
 import { breadcrumbSchema } from '@root/seo/schema'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -79,34 +78,16 @@ export async function generateMetadata({
   const { isEnabled: draft } = await draftMode()
   const page = await getPage(slug, draft)
 
-  let ogImage: Media | null = null
-
-  if (page && page.meta?.image && typeof page.meta.image !== 'string') {
-    ogImage = page.meta.image
-  }
-
-  // check if noIndex is true
-  const noIndexMeta = page?.noindex ? { robots: { index: false, follow: false } } : {}
-
   const canonical = '/' + (Array.isArray(slug) ? slug.join('/') : slug || '')
 
-  return {
-    alternates: { canonical },
-    description: page?.meta?.description ?? undefined,
-    openGraph: mergeOpenGraph({
-      description: page?.meta?.description ?? undefined,
-      images: ogImage
-        ? [
-            {
-              url: ogImage.url as string,
-            },
-          ]
-        : undefined,
-      title: page?.meta?.title || page?.title || undefined,
-      url: canonical,
-    }),
-    title: page?.meta?.title || page?.title || undefined,
-    twitter: { card: 'summary_large_image' },
-    ...noIndexMeta,
-  }
+  return buildMetadata({
+    kind: 'page',
+    path: canonical,
+    title: page?.title,
+    metaTitle: page?.meta?.title,
+    metaDescription: page?.meta?.description,
+    excerpt: page?.description,
+    metaImage: page?.meta?.image,
+    noindex: page?.noindex,
+  })
 }

@@ -5,8 +5,9 @@ import { JsonLd } from '@components/SEO/JsonLd'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { fetchCaseStudies, fetchCaseStudy } from '@data'
-import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { buildMetadata } from '@root/seo/metadata'
 import { articleSchema, breadcrumbSchema } from '@root/seo/schema'
+import { richTextToPlain } from '@root/utilities/richTextToPlain'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -85,24 +86,16 @@ export async function generateMetadata({
   const { slug } = await params
   const page = await getCaseStudy(slug, draft)
 
-  const ogImage =
-    typeof page?.meta?.image === 'object' &&
-    page?.meta?.image !== null &&
-    'url' in page.meta.image &&
-    typeof page.meta.image.url === 'string'
-      ? page.meta.image.url
-      : undefined
-
-  return {
-    alternates: { canonical: `/case-studies/${slug}` },
-    description: page?.meta?.description ?? undefined,
-    openGraph: mergeOpenGraph({
-      description: page?.meta?.description ?? undefined,
-      images: ogImage ? [{ url: ogImage }] : undefined,
-      title: page?.meta?.title ?? undefined,
-      url: `/case-studies/${slug}`,
-    }),
-    title: page?.meta?.title ?? undefined,
-    twitter: { card: 'summary_large_image' },
-  }
+  return buildMetadata({
+    kind: 'caseStudy',
+    path: `/case-studies/${slug}`,
+    title: page?.title,
+    metaTitle: page?.meta?.title,
+    metaDescription: page?.meta?.description,
+    excerpt: richTextToPlain(page?.introContent),
+    metaImage: page?.meta?.image,
+    featuredImage: page?.featuredImage,
+    ogTypeOverride: 'article',
+    publishedTime: page?.updatedAt,
+  })
 }

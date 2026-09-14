@@ -37,6 +37,7 @@ export const Hero: React.FC<{
       hero,
       hero: { type },
     },
+    page,
   } = props
 
   const HeroToRender = heroes[type] as any
@@ -46,7 +47,12 @@ export const Hero: React.FC<{
       <>
         <BreadcrumbsBar breadcrumbs={breadcrumbs} hero={hero} />
 
-        <HeroToRender {...hero} breadcrumbs={breadcrumbs} firstContentBlock={firstContentBlock} />
+        <HeroToRender
+          {...hero}
+          breadcrumbs={breadcrumbs}
+          firstContentBlock={firstContentBlock}
+          pageTitle={page.title}
+        />
       </>
     )
   }

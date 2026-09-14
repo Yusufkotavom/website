@@ -118,6 +118,8 @@ export const articleSchema = (post: {
   excerpt?: string | null
   image?: (number | Media) | null
   authors?: unknown
+  authorName?: string | null
+  url?: string | null
 }): Schema => ({
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -126,8 +128,10 @@ export const articleSchema = (post: {
   image: mediaUrl(post.image) || undefined,
   datePublished: post.publishedOn || undefined,
   dateModified: post.updatedAt || post.publishedOn || undefined,
-  mainEntityOfPage: post.slug ? `${base}/posts/${post.slug}` : base,
-  author: { '@type': 'Organization', name: 'Kotacom' },
+  mainEntityOfPage: post.url ? abs(post.url) : post.slug ? `${base}/posts/${post.slug}` : base,
+  author: post.authorName
+    ? { '@type': 'Person', name: post.authorName }
+    : { '@type': 'Organization', name: 'Kotacom' },
   publisher: { '@id': `${base}/#organization` },
 })
 
@@ -179,4 +183,35 @@ export const faqSchema = (faqs: { question: string; answer: string }[]): Schema 
     name: f.question,
     acceptedAnswer: { '@type': 'Answer', text: f.answer },
   })),
+})
+
+/** ItemList — a list of URLs (product/service archives, search results). */
+export const itemListSchema = (items: { name: string; url: string }[]): Schema => ({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  numberOfItems: items.length,
+  itemListElement: items.map((it, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: it.name,
+    url: abs(it.url),
+  })),
+})
+
+/** CollectionPage — a hub page that lists other entities (e.g. /produk, /case-studies). */
+export const collectionPageSchema = (opts: {
+  name: string
+  url: string
+  description?: string | null
+  items?: { name: string; url: string }[]
+}): Schema => ({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: opts.name,
+  url: abs(opts.url),
+  description: opts.description || undefined,
+  isPartOf: { '@id': `${base}/#website` },
+  mainEntity: opts.items
+    ? itemListSchema(opts.items)
+    : undefined,
 })

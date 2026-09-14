@@ -48,6 +48,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
       blog: 'Artikel',
       service: 'Layanan',
       product: 'Produk',
+      portfolio: 'Portofolio',
       caseStudy: 'Studi Kasus',
       pricing: 'Harga & Paket',
     }

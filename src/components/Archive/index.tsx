@@ -77,9 +77,9 @@ export const Archive: React.FC<{ category: Category['slug'] }> = async ({ catego
         <Gutter>
           <div className={[classes.hero].filter(Boolean).join(' ')}>
             <div className={[classes.heroContent, 'grid'].filter(Boolean).join(' ')}>
-              <h2 className={[classes.title, 'cols-8 cols-m-8'].filter(Boolean).join(' ')}>
-                {headline}
-              </h2>
+              <h1 className={[classes.title, 'cols-8 cols-m-8'].filter(Boolean).join(' ')}>
+                {headline || archive.name}
+              </h1>
               <p
                 className={[classes.description, 'cols-4 start-13 start-m-1 cols-m-8']
                   .filter(Boolean)

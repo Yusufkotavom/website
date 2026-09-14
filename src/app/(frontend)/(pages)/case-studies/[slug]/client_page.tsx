@@ -49,6 +49,7 @@ export const CaseStudy: React.FC<CaseStudyT> = (props) => {
           <div className={['grid'].filter(Boolean).join(' ')}>
             <div className={['cols-6 cols-m-8', classes.content].filter(Boolean).join(' ')}>
               <div className={classes.titleWrap}>
+                <h1 className={classes.title}>{title}</h1>
                 <RichText className={classes.introContent} content={introContent} />
               </div>
               {(industry || useCase) && (

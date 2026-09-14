@@ -1,5 +1,14 @@
 @use '@scss/common' as *;
 
+.title {
+  font-family: var(--font-family-sans);
+  font-weight: 500;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin: 0 0 1rem;
+}
+
 .featuredImage {
   width: 150%;
   height: auto;

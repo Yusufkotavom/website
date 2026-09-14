@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { isAdmin } from '../access/isAdmin'
 import { publishedOnly } from '../access/publishedOnly'
 import { slugField } from '../fields/slug'
+import { seoFields } from '../fields/seoFields'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
 
 /**
@@ -139,6 +140,7 @@ export const Products: CollectionConfig = {
       ],
     },
     slugField(),
+    seoFields(),
   ],
   hooks: {
     afterChange: [

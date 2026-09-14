@@ -16,8 +16,9 @@ import classes from './index.module.scss'
 export const DefaultHero: React.FC<
   {
     firstContentBlock?: BlocksProp
+    pageTitle?: string
   } & Pick<Page['hero'], 'description' | 'richText' | 'theme'>
-> = ({ description, firstContentBlock, richText, theme }) => {
+> = ({ description, firstContentBlock, pageTitle, richText, theme }) => {
   const withoutDescription = !description || description.root.children.length < 1
 
   return (
@@ -27,6 +28,7 @@ export const DefaultHero: React.FC<
         <div className={classes.defaultHero}>
           <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
             <div className={[`cols-8 start-1`, `cols-m-8`, 'cols-s-8'].filter(Boolean).join(' ')}>
+              {pageTitle && <h1 className={classes.pageTitle}>{pageTitle}</h1>}
               <RichText className={classes.richText} content={richText} />
             </div>
 

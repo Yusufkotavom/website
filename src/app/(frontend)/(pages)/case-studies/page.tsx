@@ -10,7 +10,7 @@ import BreadcrumbsBar from '@components/Hero/BreadcrumbsBar/index'
 import { Gutter } from '@components/Gutter/index'
 import { JsonLd } from '@components/SEO/JsonLd'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
-import { breadcrumbSchema } from '@root/seo/schema'
+import { breadcrumbSchema, collectionPageSchema } from '@root/seo/schema'
 
 import classes from './index.module.scss'
 
@@ -45,10 +45,20 @@ export default async function CaseStudiesIndex() {
   return (
     <React.Fragment>
       <JsonLd
-        schema={breadcrumbSchema([
-          { name: 'Beranda', url: '/' },
-          { name: 'Studi Kasus', url: '/case-studies' },
-        ])}
+        schema={[
+          breadcrumbSchema([
+            { name: 'Beranda', url: '/' },
+            { name: 'Studi Kasus', url: '/case-studies' },
+          ]),
+          collectionPageSchema({
+            name: 'Studi Kasus Kotacom',
+            url: '/case-studies',
+            description: 'Portofolio proyek Kotacom.',
+            items: studies
+              .filter((s) => s.slug)
+              .map((s) => ({ name: s.title || (s.slug as string), url: `/case-studies/${s.slug}` })),
+          }),
+        ]}
       />
       <BreadcrumbsBar breadcrumbs={[]} hero={{ type: 'default' } as Page['hero']} />
       <div className={classes.wrapper}>

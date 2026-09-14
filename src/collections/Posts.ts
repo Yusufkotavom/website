@@ -9,6 +9,10 @@ import richText from '../fields/richText'
 import { slugField } from '../fields/slug'
 import { formatPreviewURL } from '../utilities/formatPreviewURL'
 
+// NOTE: `meta` (SEO) is injected by the SEO plugin in payload.config.ts, so
+// Posts must NOT declare `seoFields()` — a duplicate `meta` field would break
+// the config.
+
 export const Posts: CollectionConfig = {
   slug: 'posts',
   access: {

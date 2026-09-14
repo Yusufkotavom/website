@@ -443,6 +443,10 @@ export interface Page {
   id: string;
   title: string;
   fullTitle?: string | null;
+  /**
+   * Dipakai sebagai deskripsi meta & ringkasan bila kolom SEO dikosongkan.
+   */
+  description?: string | null;
   noindex?: boolean | null;
   hero: {
     type:
@@ -2865,6 +2869,20 @@ export interface Product {
       )[]
     | null;
   slug?: string | null;
+  meta?: {
+    /**
+     * Judul untuk hasil pencarian. Kosongkan untuk memakai judul halaman.
+     */
+    title?: string | null;
+    /**
+     * Deskripsi meta (~120–155 karakter). Kosongkan untuk memakai ringkasan.
+     */
+    description?: string | null;
+    /**
+     * Gambar 1200×630 untuk dibagikan di sosial media.
+     */
+    image?: (string | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -3116,6 +3134,13 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   layout?: T | {};
   slug?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -3146,6 +3171,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
   fullTitle?: T;
+  description?: T;
   noindex?: T;
   hero?:
     | T

@@ -4,6 +4,15 @@
   position: relative;
 }
 
+.pageTitle {
+  font-family: var(--font-family-sans);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  margin: 0 0 1rem;
+}
+
 .label {
   margin-bottom: 2rem;
 
