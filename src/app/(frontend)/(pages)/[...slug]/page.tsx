@@ -1,3 +1,4 @@
+import { buildSafe } from '@root/utilities/buildSafe'
 import type { Media } from '@root/payload-types'
 import type { Metadata } from 'next'
 
@@ -44,12 +45,15 @@ const Page = async ({
 export default Page
 
 export async function generateStaticParams() {
+  // Build-safe: no DB at build time → prerender nothing, render on demand.
+  return buildSafe('pages.params', async () => {
   const getPages = unstable_cache(fetchPages, ['pages'])
   const pages = await getPages()
 
   return pages.map(({ breadcrumbs }) => ({
     slug: breadcrumbs?.[breadcrumbs.length - 1]?.url?.replace(/^\/|\/$/g, '').split('/'),
   }))
+  }, [])
 }
 
 export async function generateMetadata({

@@ -1,3 +1,4 @@
+import { buildSafe } from '@root/utilities/buildSafe'
 import { Banner } from '@components/Banner'
 import { RenderDocs } from '@components/RenderDocs'
 import config from '@payload-config'
@@ -113,7 +114,9 @@ export async function generateMetadata({
 // Next.js will server-render the page on-demand.
 export const dynamicParams = true
 
-export async function generateStaticParams(): Promise<Params[]> {
+export async function generateStaticParams() {
+  // Build-safe: no DB at build time → prerender nothing, render on demand.
+  return buildSafe('docs.params', async () => {
   if (
     process.env.NEXT_PUBLIC_SKIP_BUILD_DOCS ||
     process.env.NEXT_PUBLIC_ENABLE_LEGACY_DOCS !== 'true'
@@ -148,4 +151,5 @@ export async function generateStaticParams(): Promise<Params[]> {
   }
 
   return result
+  }, [] as any[])
 }

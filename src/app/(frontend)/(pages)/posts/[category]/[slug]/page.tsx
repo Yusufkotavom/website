@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { buildSafe } from '@root/utilities/buildSafe'
 import BreadcrumbsBar from '@components/Hero/BreadcrumbsBar/index'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { Post } from '@components/Post/index'
@@ -47,6 +48,8 @@ const PostPage = async ({
 export default PostPage
 
 export async function generateStaticParams() {
+  // Build-safe: no DB at build time → prerender nothing, render on demand.
+  return buildSafe('post.params', async () => {
   const getPosts = unstable_cache(fetchPosts, ['allPosts'])
   const posts = await getPosts()
 
@@ -62,6 +65,7 @@ export async function generateStaticParams() {
       }
     })
     .filter(Boolean)
+  }, [])
 }
 
 export async function generateMetadata({

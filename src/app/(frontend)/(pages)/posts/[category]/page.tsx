@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Archive } from '@components/Archive'
 import { Post } from '@components/Post/index'
 import { fetchArchive, fetchArchives, fetchPostBySlug, fetchPosts } from '@data'
+import { buildSafe } from '@root/utilities/buildSafe'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -51,14 +52,17 @@ export default async ({
 }
 
 export const generateStaticParams = async () => {
-  const [archives, posts] = await Promise.all([fetchArchives(), fetchPosts()])
+  // Build-safe: with no DB at build time prerender nothing; pages render on demand.
+  return buildSafe('posts.params', async () => {
+    const [archives, posts] = await Promise.all([fetchArchives(), fetchPosts()])
 
-  return [
-    ...archives.map((archive) => ({ category: archive.slug })),
-    ...posts
-      .map((post) => (post?.slug ? { category: post.slug } : null))
-      .filter((entry): entry is { category: string } => entry !== null),
-  ]
+    return [
+      ...archives.map((archive) => ({ category: archive.slug })),
+      ...posts
+        .map((post) => (post?.slug ? { category: post.slug } : null))
+        .filter((entry): entry is { category: string } => entry !== null),
+    ]
+  }, [] as { category: string }[])
 }
 
 export const generateMetadata = async ({

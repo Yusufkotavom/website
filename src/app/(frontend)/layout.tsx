@@ -12,6 +12,13 @@ import React from 'react'
 import { untitledSans } from './fonts'
 import '../../css/app.scss'
 
+// Every page under (frontend) is DB-driven, so render on demand instead of prerendering.
+// `next build` would otherwise query Payload/Mongo while generating static pages, and the
+// build environment (Dokploy builder) cannot reach `payload-mongo` on dokploy-network —
+// that turned every redeploy into a failed build. This segment config applies to all
+// routes below it. Side benefits: content edits appear without a rebuild.
+export const dynamic = 'force-dynamic'
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

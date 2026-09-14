@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { buildSafe } from '@root/utilities/buildSafe'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { fetchCaseStudies, fetchCaseStudy } from '@data'
@@ -43,12 +44,15 @@ const CaseStudyBySlug = async ({ params }) => {
 export default CaseStudyBySlug
 
 export async function generateStaticParams() {
+  // Build-safe: no DB at build time → prerender nothing, render on demand.
+  return buildSafe('caseStudies.params', async () => {
   const getCaseStudies = unstable_cache(fetchCaseStudies, ['caseStudies'])
   const caseStudies = await getCaseStudies()
 
   return caseStudies.map(({ slug }) => ({
     slug,
   }))
+  }, [])
 }
 
 export async function generateMetadata({

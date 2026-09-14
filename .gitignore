@@ -47,3 +47,11 @@ next-env.d.ts
 !/.idea/payload.iml
 
 /db/*
+
+# Local-only operational scripts — seed.ts contains the admin bootstrap password
+# and must never be published (this repo is public).
+src/scripts/seed.ts
+src/scripts/test-seed.ts
+src/scripts/env-check.ts
+src/scripts/getpayload-test.ts
+media/

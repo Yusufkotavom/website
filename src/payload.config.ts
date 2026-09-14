@@ -13,7 +13,6 @@ import {
   LinkFeature,
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import link from '@root/fields/link'
 import { LabelFeature } from '@root/fields/richText/features/label/server'
 import { LargeBodyFeature } from '@root/fields/richText/features/largeBody/server'
@@ -599,16 +598,6 @@ export default buildConfig({
           afterChange: [revalidateRedirects],
         },
       },
-    }),
-    vercelBlobStorage({
-      cacheControlMaxAge: 60 * 60 * 24 * 365, // 1 year
-      collections: {
-        media: {
-          generateFileURL: ({ filename }) => `https://${process.env.BLOB_STORE_ID}/${filename}`,
-        },
-      },
-      enabled: Boolean(process.env.BLOB_STORAGE_ENABLED) || false,
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
     mcpPlugin({
       mcp: {

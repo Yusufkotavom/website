@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 
 import classes from './index.module.scss'
 
@@ -6,20 +6,22 @@ type BackgroundGradientProps = {
   className?: string
 }
 
+/**
+ * Ambient background for hero / CTA blocks.
+ *
+ * Previously this rendered a 8.5 MB video hosted on Vercel Blob. That is gone:
+ * everything is self-hosted on this VPS, and the design system is strict Geist
+ * (flat, hairline, no glass / glow / gradient). This is now pure CSS — a masked
+ * blueprint grid plus one soft radial wash, which keeps the visual interest
+ * without pulling bytes over the network or depending on a third party.
+ */
 export default function BackgroundGradient(props: BackgroundGradientProps) {
   const { className } = props
 
   return (
     <div className={[className, classes.backgroundGradientWrapper].filter(Boolean).join(' ')}>
-      <Suspense>
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          src="https://l4wlsi8vxy8hre4v.public.blob.vercel-storage.com/video/glass-animation-5-f0gPcjmKFIV3ot5MGOdNy2r4QHBoXt.mp4"
-        />
-      </Suspense>
+      <span aria-hidden className={classes.grid} />
+      <span aria-hidden className={classes.wash} />
     </div>
   )
 }
