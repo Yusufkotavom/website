@@ -185,14 +185,16 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               })}
               <CrosshairIcon className={[classes.crosshair, classes.crosshairLeft].join(' ')} />
             </div>
-            <div className={classes.captchaWrap}>
-              <ReCAPTCHA
-                className={classes.captcha}
-                ref={recaptcha}
-                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-                theme="dark"
-              />
-            </div>
+            {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
+              <div className={classes.captchaWrap}>
+                <ReCAPTCHA
+                  className={classes.captcha}
+                  ref={recaptcha}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  theme="dark"
+                />
+              </div>
+            ) : null}
             <Submit
               className={[classes.submitButton, classes.hideTopBorder].filter(Boolean).join(' ')}
               disabled={isLoading}
