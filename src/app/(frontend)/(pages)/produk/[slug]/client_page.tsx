@@ -80,11 +80,11 @@ export const Product: React.FC<ProductT> = (props) => {
         {Array.isArray(specs) && specs.length > 0 && (
           <Gutter>
             <div className={['grid', classes.specs].filter(Boolean).join(' ')}>
-              <div className={['cols-4 cols-m-8', classes.specsHeading].filter(Boolean).join(' ')}>
+              <div className={['cols-4 start-1 cols-m-8', classes.specsHeading].filter(Boolean).join(' ')}>
                 <p className={classes.eyebrow}>Detail</p>
                 <p className={classes.specsTitle}>Spesifikasi</p>
               </div>
-              <dl className={['cols-12 cols-m-8', classes.specsList].filter(Boolean).join(' ')}>
+              <dl className={['cols-11 start-6 cols-m-8', classes.specsList].filter(Boolean).join(' ')}>
                 {specs.map((spec, i) => (
                   <div className={classes.specRow} key={i}>
                     <dt className={classes.specLabel}>{spec.label}</dt>
