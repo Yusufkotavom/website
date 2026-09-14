@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 
 import { buildSafe } from '@root/utilities/buildSafe'
+import { JsonLd } from '@components/SEO/JsonLd'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { fetchProduct, fetchProducts } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { breadcrumbSchema, productSchema } from '@root/seo/schema'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import React from 'react'
@@ -36,6 +38,16 @@ const ProductBySlug = async ({ params }) => {
     <>
       <PayloadRedirects disableNotFound url={url} />
       <RefreshRouteOnSave />
+      <JsonLd
+        schema={[
+          breadcrumbSchema([
+            { name: 'Beranda', url: '/' },
+            { name: 'Produk & Layanan', url: '/produk' },
+            { name: product.title, url: `/produk/${slug}` },
+          ]),
+          productSchema(product),
+        ]}
+      />
       <Product {...product} />
     </>
   )
@@ -72,6 +84,7 @@ export async function generateMetadata({
     product.featuredImage.url
 
   return {
+    alternates: { canonical: `/produk/${slug}` },
     description: product?.shortDescription ?? undefined,
     openGraph: mergeOpenGraph({
       description: product?.shortDescription ?? undefined,
@@ -80,5 +93,6 @@ export async function generateMetadata({
       url: `/produk/${slug}`,
     }),
     title: product?.title ?? undefined,
+    twitter: { card: 'summary_large_image' },
   }
 }

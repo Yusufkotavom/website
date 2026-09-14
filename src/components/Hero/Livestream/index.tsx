@@ -61,7 +61,7 @@ export const LivestreamHero: React.FC<{
                   return (
                     <a className={classes.guestWrap} href={link || '/'} key={i} target="_blank">
                       {image && typeof image !== 'string' && (
-                        <img src={`${process.env.NEXT_PUBLIC_CMS_URL}${image.url}`} />
+                        <img src={`${process.env.NEXT_PUBLIC_SITE_URL}${image.url}`} />
                       )}
                       {name && name}
                     </a>

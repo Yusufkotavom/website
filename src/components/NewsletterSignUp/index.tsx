@@ -63,7 +63,7 @@ export const NewsletterSignUp: React.FC<NewsletterSignUpProps> = (props) => {
         const slugParts = pathname?.split('/')
         const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
         toast.promise(
-          fetch(`${process.env.NEXT_PUBLIC_CMS_URL}/api/form-submissions`, {
+          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/form-submissions`, {
             body: JSON.stringify({
               form: formID,
               hubspotCookie,

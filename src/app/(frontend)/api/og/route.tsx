@@ -23,12 +23,6 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     const { searchParams: earlyParams } = new URL(req.url)
     const isReleases = earlyParams.get('type') === 'releases'
 
-    const faviconDataUrl = await fetch(
-      new URL('../../../../../public/images/favicon-light.png', import.meta.url),
-    )
-      .then((res) => res.arrayBuffer())
-      .then((buf) => `data:image/png;base64,${Buffer.from(buf).toString('base64')}`)
-
     const releasesBgDataUrl = isReleases
       ? await fetch(new URL('../../../../../public/images/release-notes-bg.jpg', import.meta.url))
           .then((res) => res.arrayBuffer())
@@ -46,13 +40,16 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     const hasTopic = searchParams.has('topic')
     const topic = hasTopic ? searchParams.get('topic')?.slice(0, 100).replace('-', ' ') : ''
     const hasType = searchParams.has('type')
-    const ogType = hasType ? searchParams.get('type') : 'docs'
+    const ogType = hasType ? searchParams.get('type') : 'home'
 
-    const ogTypeLabel = {
-      blog: 'Blog Post',
-      docs: 'Documentation',
-      guides: 'Guides & Tutorials',
-      releases: 'Release Notes',
+    const ogTypeLabel: Record<string, string> = {
+      home: 'Kotacom',
+      page: 'Halaman',
+      blog: 'Artikel',
+      service: 'Layanan',
+      product: 'Produk',
+      caseStudy: 'Studi Kasus',
+      pricing: 'Harga & Paket',
     }
 
     return new ImageResponse(
@@ -205,12 +202,19 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt="Payload CMS"
-                height="40"
-                src={faviconDataUrl}
-                width="40"
-              />
+              <div
+                style={{
+                  alignItems: 'center',
+                  display: 'flex',
+                  fontFamily: 'UntitledSansMedium',
+                  fontSize: 34,
+                  fontWeight: 500,
+                  letterSpacing: '-0.04em',
+                  lineHeight: 1,
+                }}
+              >
+                Kotacom
+              </div>
               {ogType !== 'releases' && (
                 <div
                   style={{
@@ -219,7 +223,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
                     textTransform: 'uppercase',
                   }}
                 >
-                  {ogTypeLabel[ogType ?? 'docs']}
+                  {ogTypeLabel[ogType ?? 'home']}
                 </div>
               )}
             </div>

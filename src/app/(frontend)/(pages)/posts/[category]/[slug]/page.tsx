@@ -7,9 +7,12 @@ import { Post } from '@components/Post/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { fetchBlogPost, fetchPosts } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { articleSchema, breadcrumbSchema } from '@root/seo/schema'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import React from 'react'
+
+import { JsonLd } from '@components/SEO/JsonLd'
 
 const getPost = async (slug, category, draft?) =>
   draft
@@ -40,6 +43,23 @@ const PostPage = async ({
       <PayloadRedirects disableNotFound url={url} />
       <RefreshRouteOnSave />
       <BreadcrumbsBar breadcrumbs={[]} hero={{ type: 'default' }} />
+      <JsonLd
+        schema={[
+          breadcrumbSchema([
+            { name: 'Beranda', url: '/' },
+            { name: 'Artikel', url: '/posts' },
+            { name: blogPost.title || slug, url: `/posts/${slug}` },
+          ]),
+          articleSchema({
+            title: blogPost.title,
+            slug,
+            publishedOn: blogPost.publishedOn,
+            updatedAt: blogPost.updatedAt,
+            excerpt: blogPost.meta?.description,
+            image: (blogPost.image || blogPost.meta?.image) as never,
+          }),
+        ]}
+      />
       <Post {...blogPost} />
     </>
   )
@@ -98,7 +118,8 @@ export async function generateMetadata({
   }
 
   return {
-    description: post?.meta?.description,
+    alternates: { canonical: `/posts/${slug}` },
+    description: post?.meta?.description ?? undefined,
     openGraph: mergeOpenGraph({
       description: post?.meta?.description ?? undefined,
       images: ogImage
@@ -109,8 +130,9 @@ export async function generateMetadata({
           ]
         : undefined,
       title: post?.meta?.title ?? undefined,
-      url: `/${category}/${slug}`,
+      url: `/posts/${slug}`,
     }),
     title: post?.meta?.title ?? post?.title ?? undefined,
+    twitter: { card: 'summary_large_image' },
   }
 }

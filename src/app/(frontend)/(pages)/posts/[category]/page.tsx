@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Archive } from '@components/Archive'
 import { Post } from '@components/Post/index'
 import { fetchArchive, fetchArchives, fetchPostBySlug, fetchPosts } from '@data'
+import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
 import { buildSafe } from '@root/utilities/buildSafe'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
@@ -78,8 +79,14 @@ export const generateMetadata = async ({
     const { name, description } = archive
 
     return {
-      description,
-      title: `${name} | Payload`,
+      alternates: { canonical: `/posts/${category}` },
+      description: description ?? undefined,
+      openGraph: mergeOpenGraph({
+        description: description ?? undefined,
+        title: name ?? undefined,
+        url: `/posts/${category}`,
+      }),
+      title: name ?? undefined,
     }
   }
 
@@ -87,7 +94,13 @@ export const generateMetadata = async ({
 
   if (post) {
     return {
-      description: post?.meta?.description,
+      alternates: { canonical: `/posts/${post.slug || category}` },
+      description: post?.meta?.description ?? undefined,
+      openGraph: mergeOpenGraph({
+        description: post?.meta?.description ?? undefined,
+        title: post?.meta?.title ?? post?.title ?? undefined,
+        url: `/posts/${post.slug || category}`,
+      }),
       title: post?.meta?.title ?? post?.title ?? undefined,
     }
   }

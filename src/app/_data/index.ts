@@ -11,13 +11,17 @@ import type {
   Page,
   Post,
   Product,
+  SiteSetting,
   TopBar,
+  WhatsappMarketing,
 } from '../../payload-types'
 
 export const fetchGlobals = async (): Promise<{
   footer: Footer
   mainMenu: MainMenu
   topBar: TopBar
+  siteSettings: SiteSetting
+  whatsapp: WhatsappMarketing
 }> => {
   const payload = await getPayload({ config })
   const mainMenu = await payload.findGlobal({
@@ -32,12 +36,32 @@ export const fetchGlobals = async (): Promise<{
     slug: 'topBar',
     depth: 1,
   })
+  const siteSettings = await payload.findGlobal({
+    slug: 'site-settings',
+    depth: 1,
+  })
+  const whatsapp = await payload.findGlobal({
+    slug: 'whatsapp-marketing',
+    depth: 0,
+  })
 
   return {
     footer,
     mainMenu,
     topBar,
+    siteSettings,
+    whatsapp,
   }
+}
+
+export const fetchSiteSettings = async (): Promise<SiteSetting> => {
+  const payload = await getPayload({ config })
+  return payload.findGlobal({ slug: 'site-settings', depth: 1 })
+}
+
+export const fetchWhatsApp = async (): Promise<WhatsappMarketing> => {
+  const payload = await getPayload({ config })
+  return payload.findGlobal({ slug: 'whatsapp-marketing', depth: 0 })
 }
 
 export const fetchPage = async (incomingSlugSegments: string[]): Promise<null | Page> => {

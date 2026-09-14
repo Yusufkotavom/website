@@ -5,8 +5,7 @@ import React, { createContext, use, useCallback, useEffect, useState } from 'rea
 
 import type { Theme, ThemePreferenceContextType } from './types'
 
-import { defaultTheme, getImplicitPreference, themeLocalStorageKey } from './shared'
-import { themeIsValid } from './types'
+import { defaultTheme, resolveInitialTheme, themeLocalStorageKey } from './shared'
 
 const initialContext: ThemePreferenceContextType = {
   setTheme: () => null,
@@ -21,34 +20,20 @@ export const ThemePreferenceProvider: React.FC<{ children?: React.ReactNode }> =
   )
 
   const setTheme = useCallback((themeToSet: null | Theme) => {
-    if (themeToSet === null) {
-      window.localStorage.removeItem(themeLocalStorageKey)
-      const implicitPreference = getImplicitPreference()
-      document.documentElement.setAttribute('data-theme', implicitPreference || '')
-      if (implicitPreference) {
-        setThemeState(implicitPreference)
-      }
-    } else {
-      setThemeState(themeToSet)
-      window.localStorage.setItem(themeLocalStorageKey, themeToSet)
-      document.documentElement.setAttribute('data-theme', themeToSet)
+    const next = themeToSet === null ? defaultTheme : themeToSet
+    setThemeState(next)
+    try {
+      window.localStorage.setItem(themeLocalStorageKey, next)
+    } catch {
+      // storage can be unavailable (private mode); the attribute still applies
     }
+    document.documentElement.setAttribute('data-theme', next)
   }, [])
 
   useEffect(() => {
-    let themeToSet: Theme = defaultTheme
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
-
-    if (themeIsValid(preference)) {
-      themeToSet = preference
-    } else {
-      const implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
-    }
-
+    // The inline pre-paint script already set the attribute; this only syncs
+    // React state so theme toggles re-render. Dark is the default (AMOLED #000).
+    const themeToSet = resolveInitialTheme()
     document.documentElement.setAttribute('data-theme', themeToSet)
     setThemeState(themeToSet)
   }, [])

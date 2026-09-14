@@ -37,19 +37,18 @@ export const PrivacyBanner: React.FC = () => {
     >
       <div className={classes.contentWrap}>
         <p className={classes.content}>
-          We use cookies, subject to your consent, to analyze the use of our website and to ensure
-          you get the best experience. Third parties with whom we collaborate can also install
-          cookies in order to show you personalized advertisements on other websites. Read our{' '}
-          <Link className={classes.privacyLink} href="/cookie" prefetch={false}>
-            cookie policy
+          Kami menggunakan cookie untuk menganalisis penggunaan situs dan memastikan pengalaman
+          terbaik, serta menampilkan konten yang relevan. Baca{' '}
+          <Link className={classes.privacyLink} href="/kebijakan-privasi" prefetch={false}>
+            kebijakan privasi
           </Link>{' '}
-          for more information.
+          kami untuk informasi lebih lanjut.
         </p>
         <div className={classes.buttonWrap}>
           <Button
             appearance="secondary"
             className={classes.rejectButton}
-            label="Dismiss"
+            label="Tolak"
             onClick={() => {
               updateCookieConsent(false)
               handleCloseBanner()
@@ -58,7 +57,7 @@ export const PrivacyBanner: React.FC = () => {
           <Button
             appearance="primary"
             className={classes.acceptButton}
-            label="Accept"
+            label="Terima"
             onClick={() => {
               updateCookieConsent(true)
               handleCloseBanner()

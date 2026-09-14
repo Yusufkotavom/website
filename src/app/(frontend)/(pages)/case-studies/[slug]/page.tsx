@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 
 import { buildSafe } from '@root/utilities/buildSafe'
+import { JsonLd } from '@components/SEO/JsonLd'
 import { PayloadRedirects } from '@components/PayloadRedirects/index'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave/index'
 import { fetchCaseStudies, fetchCaseStudy } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { articleSchema, breadcrumbSchema } from '@root/seo/schema'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -37,6 +39,22 @@ const CaseStudyBySlug = async ({ params }) => {
     <>
       <PayloadRedirects disableNotFound url={url} />
       <RefreshRouteOnSave />
+      <JsonLd
+        schema={[
+          breadcrumbSchema([
+            { name: 'Beranda', url: '/' },
+            { name: 'Studi Kasus', url: '/case-studies' },
+            { name: caseStudy.title || slug, url: `/case-studies/${slug}` },
+          ]),
+          articleSchema({
+            title: caseStudy.title,
+            slug,
+            excerpt: caseStudy.meta?.description,
+            image: caseStudy.meta?.image as never,
+            updatedAt: caseStudy.updatedAt,
+          }),
+        ]}
+      />
       <CaseStudy {...caseStudy} />
     </>
   )
@@ -70,23 +88,21 @@ export async function generateMetadata({
   const ogImage =
     typeof page?.meta?.image === 'object' &&
     page?.meta?.image !== null &&
-    'url' in page?.meta?.image &&
-    `${process.env.NEXT_PUBLIC_CMS_URL}${page.meta.image.url}`
+    'url' in page.meta.image &&
+    typeof page.meta.image.url === 'string'
+      ? page.meta.image.url
+      : undefined
 
   return {
-    description: page?.meta?.description,
+    alternates: { canonical: `/case-studies/${slug}` },
+    description: page?.meta?.description ?? undefined,
     openGraph: mergeOpenGraph({
       description: page?.meta?.description ?? undefined,
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      images: ogImage ? [{ url: ogImage }] : undefined,
       title: page?.meta?.title ?? undefined,
       url: `/case-studies/${slug}`,
     }),
-    title: page?.meta?.title,
+    title: page?.meta?.title ?? undefined,
+    twitter: { card: 'summary_large_image' },
   }
 }

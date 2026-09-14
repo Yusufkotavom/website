@@ -54,6 +54,7 @@ export const ReusableContent: CollectionConfig = {
         'statement',
         'steps',
         'stickyHighlights',
+        'whatsappCta',
       ],
       blocks: [],
       required: true,

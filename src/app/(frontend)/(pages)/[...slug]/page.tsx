@@ -3,11 +3,13 @@ import type { Media } from '@root/payload-types'
 import type { Metadata } from 'next'
 
 import { Hero } from '@components/Hero/index'
+import { JsonLd } from '@components/SEO/JsonLd'
 import { PayloadRedirects } from '@components/PayloadRedirects'
 import { RefreshRouteOnSave } from '@components/RefreshRouterOnSave'
 import { RenderBlocks } from '@components/RenderBlocks/index'
 import { fetchPage, fetchPages } from '@data'
 import { mergeOpenGraph } from '@root/seo/mergeOpenGraph'
+import { breadcrumbSchema } from '@root/seo/schema'
 import { unstable_cache } from 'next/cache'
 import { draftMode } from 'next/headers'
 import React from 'react'
@@ -38,6 +40,14 @@ const Page = async ({
     <React.Fragment>
       <PayloadRedirects disableNotFound url={url} />
       <RefreshRouteOnSave />
+      <JsonLd
+        schema={breadcrumbSchema(
+          (page.breadcrumbs || []).map((b) => ({
+            name: (b.label as string) || 'Halaman',
+            url: b.url as string,
+          })),
+        )}
+      />
       <Hero firstContentBlock={page.layout[0]} page={page} />
       <RenderBlocks blocks={page.layout} hero={page.hero} />
     </React.Fragment>
@@ -76,10 +86,13 @@ export async function generateMetadata({
   }
 
   // check if noIndex is true
-  const noIndexMeta = page?.noindex ? { robots: 'noindex' } : {}
+  const noIndexMeta = page?.noindex ? { robots: { index: false, follow: false } } : {}
+
+  const canonical = '/' + (Array.isArray(slug) ? slug.join('/') : slug || '')
 
   return {
-    description: page?.meta?.description,
+    alternates: { canonical },
+    description: page?.meta?.description ?? undefined,
     openGraph: mergeOpenGraph({
       description: page?.meta?.description ?? undefined,
       images: ogImage
@@ -89,10 +102,11 @@ export async function generateMetadata({
             },
           ]
         : undefined,
-      title: page?.meta?.title || 'Payload',
-      url: Array.isArray(slug) ? slug.join('/') : '/',
+      title: page?.meta?.title || page?.title || undefined,
+      url: canonical,
     }),
-    title: page?.meta?.title || 'Payload',
-    ...noIndexMeta, // Add noindex meta tag if noindex is true
+    title: page?.meta?.title || page?.title || undefined,
+    twitter: { card: 'summary_large_image' },
+    ...noIndexMeta,
   }
 }

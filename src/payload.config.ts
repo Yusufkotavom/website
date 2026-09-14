@@ -53,6 +53,7 @@ import { Slider } from './blocks/Slider'
 import { Statement } from './blocks/Statement'
 import { Steps } from './blocks/Steps'
 import { StickyHighlights } from './blocks/StickyHighlights'
+import { WhatsAppCTA as WhatsAppCTABlock } from './blocks/WhatsAppCTA'
 import { CaseStudies } from './collections/CaseStudies'
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
@@ -63,7 +64,9 @@ import { ReusableContent } from './collections/ReusableContent'
 import { Users } from './collections/Users'
 import { Footer } from './globals/Footer'
 import { MainMenu } from './globals/MainMenu'
+import { SiteSettings } from './globals/SiteSettings'
 import { TopBar } from './globals/TopBar'
+import { WhatsAppMarketing } from './globals/WhatsAppMarketing'
 import { opsCounterPlugin } from './plugins/opsCounter'
 
 const filename = fileURLToPath(import.meta.url)
@@ -116,6 +119,7 @@ export default buildConfig({
     ExampleTabs,
     Code,
     Banner,
+    WhatsAppCTABlock,
     // Link/command button blocks used by the "three" hero CTA (see fields/hero.ts).
     {
       slug: 'link',
@@ -189,7 +193,7 @@ export default buildConfig({
     defaultFromName: 'Kotacom',
     ...sendgridConfig,
   }),
-  globals: [Footer, MainMenu, TopBar],
+  globals: [Footer, MainMenu, TopBar, SiteSettings, WhatsAppMarketing],
   graphQL: {
     disablePlaygroundInProduction: false,
   },

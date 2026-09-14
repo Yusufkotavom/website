@@ -99,6 +99,7 @@ export interface Config {
     exampleTabs: ExampleTabsBlock;
     code: Code;
     banner: Banner;
+    whatsappCta: WhatsappCta;
     link: Link;
     command: Command;
   };
@@ -151,11 +152,15 @@ export interface Config {
     footer: Footer;
     'main-menu': MainMenu;
     topBar: TopBar;
+    'site-settings': SiteSetting;
+    'whatsapp-marketing': WhatsappMarketing;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
     'main-menu': MainMenuSelect<false> | MainMenuSelect<true>;
     topBar: TopBarSelect<false> | TopBarSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'whatsapp-marketing': WhatsappMarketingSelect<false> | WhatsappMarketingSelect<true>;
   };
   locale: null;
   widgets: {
@@ -739,6 +744,7 @@ export interface Page {
     | StepsBlock
     | StickyHighlights
     | ExampleTabsBlock
+    | WhatsappCta
   )[];
   slug?: string | null;
   meta?: {
@@ -2238,6 +2244,7 @@ export interface ReusableContent {
     | Statement
     | StepsBlock
     | StickyHighlights
+    | WhatsappCta
   )[];
   updatedAt: string;
   createdAt: string;
@@ -2630,6 +2637,39 @@ export interface StickyHighlights {
   id?: string | null;
   blockName?: string | null;
   blockType: 'stickyHighlights';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whatsappCta".
+ */
+export interface WhatsappCta {
+  whatsappFields?: {
+    settings?: {
+      /**
+       * Leave blank for system default
+       */
+      theme?: ('light' | 'dark') | null;
+      background?: ('solid' | 'transparent' | 'gradientUp' | 'gradientDown') | null;
+    };
+    /**
+     * Judul opsional di atas tombol.
+     */
+    heading?: string | null;
+    /**
+     * Deskripsi singkat opsional.
+     */
+    body?: string | null;
+    context?: ('general' | 'home' | 'service' | 'product' | 'case-study' | 'post' | 'pricing' | 'contact') | null;
+    variant?: ('button' | 'inline' | 'hero' | 'link') | null;
+    /**
+     * Kosongkan untuk label default dari WhatsApp Marketing.
+     */
+    label?: string | null;
+    align?: ('left' | 'center') | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'whatsappCta';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3874,6 +3914,118 @@ export interface TopBar {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: string;
+  businessName: string;
+  legalName?: string | null;
+  tagline?: string | null;
+  /**
+   * Dipakai untuk meta description default, Organization schema, dan OG fallback.
+   */
+  description?: string | null;
+  foundedYear?: string | null;
+  logo?: (string | null) | Media;
+  /**
+   * Fallback OG/Twitter image (ideal 1200x630).
+   */
+  defaultOgImage?: (string | null) | Media;
+  /**
+   * Format internasional TANPA + / spasi / tanda hubung. Contoh: 6285799520350. Ini SATU-SATUNYA sumber nomor WhatsApp untuk seluruh situs.
+   */
+  whatsappNumber: string;
+  /**
+   * Opsional (mis. lini sales/support kedua).
+   */
+  whatsappNumberSecondary?: string | null;
+  /**
+   * Nomor telepon tampil (boleh +62 …).
+   */
+  phone?: string | null;
+  email?: string | null;
+  supportEmail?: string | null;
+  street?: string | null;
+  city?: string | null;
+  region?: string | null;
+  postalCode?: string | null;
+  country?: string | null;
+  geo?: {
+    latitude?: string | null;
+    longitude?: string | null;
+  };
+  openingHours?: string | null;
+  mapsUrl?: string | null;
+  socials?:
+    | {
+        platform: 'facebook' | 'instagram' | 'twitter' | 'youtube' | 'linkedin' | 'tiktok' | 'telegram';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Contoh: @kotacom (dipakai di Twitter card).
+   */
+  twitterHandle?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whatsapp-marketing".
+ */
+export interface WhatsappMarketing {
+  id: string;
+  enableFloating?: boolean | null;
+  floatingLabel?: string | null;
+  floatingGreeting?: string | null;
+  floatingPosition?: ('right' | 'left') | null;
+  /**
+   * Bar tipis di bawah layar (khusus mobile).
+   */
+  enableStickyBar?: boolean | null;
+  stickyBarLabel?: string | null;
+  defaultButtonLabel?: string | null;
+  /**
+   * Setiap pesan otomatis menyertakan URL halaman sumber.
+   */
+  appendSourceUrl?: boolean | null;
+  includePageTitle?: boolean | null;
+  sourceLabel?: string | null;
+  /**
+   * Pesan per konteks. Placeholder yang didukung: {page}, {title}, {business}.
+   */
+  templates?:
+    | {
+        context:
+          | 'general'
+          | 'home'
+          | 'service'
+          | 'product'
+          | 'case-study'
+          | 'post'
+          | 'pricing'
+          | 'contact'
+          | 'thanks'
+          | 'floating';
+        label?: string | null;
+        message: string;
+        id?: string | null;
+      }[]
+    | null;
+  enableUtm?: boolean | null;
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  /**
+   * Kirim event ke GA4 (gtag/dataLayer) setiap tombol WhatsApp diklik.
+   */
+  enableClickTracking?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
@@ -4033,6 +4185,80 @@ export interface TopBarSelect<T extends boolean = true> {
         label?: T;
         customId?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  businessName?: T;
+  legalName?: T;
+  tagline?: T;
+  description?: T;
+  foundedYear?: T;
+  logo?: T;
+  defaultOgImage?: T;
+  whatsappNumber?: T;
+  whatsappNumberSecondary?: T;
+  phone?: T;
+  email?: T;
+  supportEmail?: T;
+  street?: T;
+  city?: T;
+  region?: T;
+  postalCode?: T;
+  country?: T;
+  geo?:
+    | T
+    | {
+        latitude?: T;
+        longitude?: T;
+      };
+  openingHours?: T;
+  mapsUrl?: T;
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  twitterHandle?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "whatsapp-marketing_select".
+ */
+export interface WhatsappMarketingSelect<T extends boolean = true> {
+  enableFloating?: T;
+  floatingLabel?: T;
+  floatingGreeting?: T;
+  floatingPosition?: T;
+  enableStickyBar?: T;
+  stickyBarLabel?: T;
+  defaultButtonLabel?: T;
+  appendSourceUrl?: T;
+  includePageTitle?: T;
+  sourceLabel?: T;
+  templates?:
+    | T
+    | {
+        context?: T;
+        label?: T;
+        message?: T;
+        id?: T;
+      };
+  enableUtm?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  enableClickTracking?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
