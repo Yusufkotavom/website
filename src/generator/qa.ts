@@ -27,8 +27,10 @@ const hasEmptyAiBlock = (draft: GeneratedDraft): boolean =>
 export const assessDraft = (input: {
   draft: GeneratedDraft
   existing: ExistingDoc[]
+  /** When true, a slug/lineage collision is the intended overwrite target. */
+  overwrite?: boolean
 }): QaResult => {
-  const { draft, existing } = input
+  const { draft, existing, overwrite = false } = input
   const issues: QaIssue[] = []
 
   const duplicate = findDuplicate({
@@ -38,7 +40,9 @@ export const assessDraft = (input: {
     rowKey: draft.rowKey,
     slug: draft.slug,
   })
-  if (duplicate) {
+  // In overwrite mode a duplicate is the target document, not a blocker — the
+  // runner updates it (stable id). Only a fresh `create` run treats it as fatal.
+  if (duplicate && !overwrite) {
     issues.push({
       code: `duplicate-${duplicate.reason}`,
       message: `Duplikat ${duplicate.reason} terhadap ${duplicate.existing.id}.`,

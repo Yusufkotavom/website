@@ -23,6 +23,13 @@ test('extractJson parses fenced and bare JSON', () => {
   assert.equal(extractJson('no json here'), null)
 })
 
+test('extractJson repairs bare newlines inside string values', () => {
+  const raw = '{"heading":"H","body":"baris satu\nbaris dua"}'
+  const parsed = extractJson<{ body: string }>(raw)
+  assert.ok(parsed)
+  assert.equal(parsed?.body, 'baris satu\nbaris dua')
+})
+
 test('normalizePlan coerces partial model JSON safely', () => {
   const plan = normalizePlan({ sections: [{ body: 'b', heading: 'h' }], title: '  T  ' })
   assert.equal(plan.title, 'T')

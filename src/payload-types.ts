@@ -3066,11 +3066,63 @@ export interface GeneratorTemplate {
   /**
    * Stack blok untuk entity page (boleh memuat blok aiContent).
    */
-  layout?: unknown[] | null;
+  layout?:
+    | (
+        | AiContentBlock
+        | Banner
+        | BlogContent
+        | BlogMarkdown
+        | Callout
+        | CardGrid
+        | CaseStudyCards
+        | CaseStudiesHighlight
+        | CaseStudyParallax
+        | Code
+        | CodeFeature
+        | ComparisonTableType
+        | Content
+        | ContentGrid
+        | Cta
+        | DownloadBlockType
+        | ExampleTabsBlock
+        | FormBlock
+        | HoverCards
+        | HoverHighlights
+        | LinkGrid
+        | LogoGrid
+        | MediaBlock
+        | MediaContent
+        | MediaContentAccordion
+        | Pricing
+        | ReusableContentBlock
+        | Slider
+        | Statement
+        | StepsBlock
+        | StickyHighlights
+        | WhatsappCta
+      )[]
+    | null;
   /**
    * Fragmen field-level (opsional, belum di-inject otomatis). Hanya untuk template yang memakainya lewat apiMode.
    */
-  fieldBlocks?: unknown[] | null;
+  fieldBlocks?:
+    | (
+        | AiContentBlock
+        | Banner
+        | BlogContent
+        | BlogMarkdown
+        | Callout
+        | CardGrid
+        | Code
+        | Content
+        | Cta
+        | MediaBlock
+        | ReusableContentBlock
+        | Statement
+        | StepsBlock
+        | WhatsappCta
+      )[]
+    | null;
   /**
    * Untuk post: kategori default.
    */
@@ -3142,6 +3194,18 @@ export interface GeneratorProgram {
    * Sumber baris. Bila lebih dari satu, antrean digabung.
    */
   datasets: (string | GeneratorDataset)[];
+  /**
+   * Wajib untuk entityType=post: kategori.
+   */
+  defaultCategory?: (string | null) | Category;
+  /**
+   * Wajib untuk entityType=post: author.
+   */
+  defaultAuthors?: (string | User)[] | null;
+  /**
+   * Wajib untuk entityType=post: gambar utama.
+   */
+  defaultImage?: (string | null) | Media;
   aiMode?: ('off' | 'dry' | 'generate') | null;
   /**
    * Default: pro-coding (gateway lokal 20128).
@@ -3899,6 +3963,9 @@ export interface GeneratorProgramsSelect<T extends boolean = true> {
   routeBase?: T;
   template?: T;
   datasets?: T;
+  defaultCategory?: T;
+  defaultAuthors?: T;
+  defaultImage?: T;
   aiMode?: T;
   aiModel?: T;
   writeMode?: T;

@@ -61,6 +61,28 @@ export const GeneratorPrograms: CollectionConfig = {
       required: true,
     },
     {
+      name: 'defaultCategory',
+      type: 'relationship',
+      admin: { description: 'Wajib untuk entityType=post: kategori.' },
+      label: 'Default Category (post)',
+      relationTo: 'categories',
+    },
+    {
+      name: 'defaultAuthors',
+      type: 'relationship',
+      admin: { description: 'Wajib untuk entityType=post: author.' },
+      hasMany: true,
+      label: 'Default Authors (post)',
+      relationTo: 'users',
+    },
+    {
+      name: 'defaultImage',
+      type: 'upload',
+      admin: { description: 'Wajib untuk entityType=post: gambar utama.' },
+      label: 'Default Image (post)',
+      relationTo: 'media',
+    },
+    {
       type: 'row',
       fields: [
         {

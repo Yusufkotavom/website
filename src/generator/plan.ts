@@ -2,12 +2,41 @@ import { aiChat } from './ai'
 import type { ContentPlan } from './blocks'
 import type { GeneratorRow, GeneratorTemplateLite } from './types'
 
+/** Escape raw control chars that appear *inside* JSON strings (models often
+ * emit literal newlines), which JSON.parse rejects. Leaves structural
+ * whitespace and proper escapes untouched. */
+const escapeBareControlChars = (input: string): string => {
+  let out = ''
+  let inString = false
+  let escaped = false
+  for (const ch of input) {
+    if (escaped) {
+      out += ch
+      escaped = false
+      continue
+    }
+    if (ch === '\\') {
+      out += ch
+      escaped = true
+      continue
+    }
+    if (ch === '"') {
+      inString = !inString
+      out += ch
+      continue
+    }
+    if (inString && (ch === '\n' || ch === '\r' || ch === '\t')) {
+      out += ch === '\n' ? '\\n' : ch === '\r' ? '\\r' : '\\t'
+      continue
+    }
+    out += ch
+  }
+  return out
+}
+
 /** Pull the first balanced JSON object out of a model response. */
-export const extractJson = (text: string): null | Record<string, unknown> => {
-  const cleaned = (text || '')
-    .replace(/^\s*```(?:json)?/i, '')
-    .replace(/```\s*$/i, '')
-    .trim()
+export const extractJson = <T = Record<string, unknown>>(text: string): null | T => {
+  const cleaned = (text || '').replace(/```(?:json)?/gi, '').trim()
 
   const start = cleaned.indexOf('{')
   const end = cleaned.lastIndexOf('}')
@@ -15,9 +44,13 @@ export const extractJson = (text: string): null | Record<string, unknown> => {
 
   const candidate = cleaned.slice(start, end + 1)
   try {
-    return JSON.parse(candidate) as Record<string, unknown>
+    return JSON.parse(candidate) as T
   } catch {
-    return null
+    try {
+      return JSON.parse(escapeBareControlChars(candidate)) as T
+    } catch {
+      return null
+    }
   }
 }
 
@@ -81,7 +114,7 @@ export type StructureInput = {
   row: GeneratorRow
   template: Pick<
     GeneratorTemplateLite,
-    'h1Pattern' | 'seoDescriptionPattern' | 'seoTitlePattern'
+    'h1Pattern' | 'seoDescriptionPattern' | 'seoTitlePattern' | 'slugPattern'
   >
   tokens: Record<string, string>
 }
@@ -100,14 +133,18 @@ export const buildStructurePrompt = (input: StructureInput): string => {
     `- Industri: ${tokens.industry || '-'}`,
     `- Penawaran/angle: ${tokens.offer || '-'}`,
     `- Konteks lokal unik: ${tokens.localCondition || '-'}`,
+    `- Minimal seksi: ${isPost ? '4' : '3'}`,
     template.seoTitlePattern ? `- Pola judul SEO: ${template.seoTitlePattern}` : '',
     template.seoDescriptionPattern ? `- Pola deskripsi SEO: ${template.seoDescriptionPattern}` : '',
+    template.slugPattern ? `- Jangan mengubah slug/URL.` : '',
     `\nAturan khusus:`,
     isPost
       ? '- Nada artikel edukatif/panduan; sertakan 4-6 bagian; 3-5 FAQ.'
       : '- Nada penawaran layanan; sertakan langkah proses (3-4), 4-6 kartu layanan/keunggulan, 3 paket harga INDICATIVE (kosongkan harga bila kustom), 3-5 FAQ.',
+    '- metaDescription WAJIB 120-155 karakter (hitung dengan cermat).',
     '- Jangan mengarang testimoni, sertifikasi, angka statistik, atau nomor kontak.',
     '- Setiap kalimat harus spesifik ke konteks di atas; hindari frasa generik yang bisa dipakai untuk kota lain.',
+    '- Jangan menyebut merek/agensi lain selain Kotacom.',
     '\nBalas HANYA dengan JSON valid (tanpa penjelasan, tanpa code fence) dengan bentuk:',
     PLAN_SCHEMA,
   ]
@@ -118,7 +155,8 @@ export const buildStructurePrompt = (input: StructureInput): string => {
 /** Generate the content plan for a row via the local AI gateway. */
 export const generatePlan = async (input: StructureInput): Promise<ContentPlan> => {
   const prompt = buildStructurePrompt(input)
-  const raw = await aiChat(prompt, { maxTokens: 4096 })
+  // 8192: the reasoning model needs headroom before emitting JSON (see ai.ts).
+  const raw = await aiChat(prompt, { maxTokens: 8192 })
   const json = extractJson(raw)
   if (!json) throw new Error('AI tidak mengembalikan JSON valid')
   return normalizePlan(json)

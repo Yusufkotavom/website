@@ -262,10 +262,16 @@ export const runProgram = async (
     // 1) Optional full content plan (drives fallback blocks + title/meta).
     let plan: ContentPlan | null = null
     if (aiNeeded && aiConfigured()) {
-      try {
-        plan = await generatePlan({ entityType, row, template, tokens })
-      } catch {
-        plan = null
+      for (let attempt = 0; attempt < 2 && !plan; attempt += 1) {
+        try {
+          plan = await generatePlan({ entityType, row, template, tokens })
+        } catch (err) {
+          if (attempt === 1) {
+            payload.logger.warn(`[generator] plan gagal utk baris ${row.key}: ${(err as Error)?.message}`)
+          }
+          plan = null
+        }
+        if (!plan) await new Promise((r) => setTimeout(r, 700))
       }
     }
 
@@ -287,7 +293,7 @@ export const runProgram = async (
     draft = built.draft
 
     // 5) QA gate (duplicate + SEO + completeness).
-    const qa = assessDraft({ draft, existing })
+    const qa = assessDraft({ draft, existing, overwrite: writeMode === 'overwrite' })
 
     const entry: RowReport = {
       action: 'dry-run',

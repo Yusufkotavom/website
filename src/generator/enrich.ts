@@ -1,5 +1,6 @@
 import { aiChat } from './ai'
 import { lexicalFromText } from './lexical'
+import { extractJson } from './plan'
 import { buildTokens } from './tokens'
 import type { GeneratorRow, GeneratorTemplateLite } from './types'
 
@@ -45,22 +46,7 @@ const buildSegmentPrompt = (input: {
     .join('\n')
 }
 
-const extractJson = (text: string): null | { body?: string; heading?: string } => {
-  const cleaned = (text || '')
-    .replace(/^\s*```(?:json)?/i, '')
-    .replace(/```\s*$/i, '')
-    .trim()
-  const start = cleaned.indexOf('{')
-  const end = cleaned.lastIndexOf('}')
-  if (start === -1 || end === -1) return null
-  try {
-    return JSON.parse(cleaned.slice(start, end + 1)) as { body?: string; heading?: string }
-  } catch {
-    return null
-  }
-}
-
-export const segmentToRichText = (segment: { body?: string; heading?: string }): RichText =>
+const segmentToRichText = (segment: { body?: string; heading?: string }): RichText =>
   lexicalFromText(
     [segment.heading ? `## ${segment.heading.trim()}` : '', (segment.body || '').trim()]
       .filter(Boolean)
@@ -71,6 +57,24 @@ const isRichTextEmpty = (value: unknown): boolean => {
   if (!value || typeof value !== 'object') return true
   const root = (value as { root?: { children?: unknown[] } }).root
   return !root?.children?.length
+}
+
+/**
+ * Turn a raw model reply into richText. Prefers strict JSON `{heading,body}`;
+ * falls back to treating the reply as prose when it is not JSON at all (the
+ * reasoning model sometimes answers with plain text). Returns null when there
+ * is nothing usable.
+ */
+const rawToRichText = (raw: string): null | Record<string, unknown> => {
+  const segment = extractJson<{ body?: string; heading?: string }>(raw)
+  if (segment && (segment.body || segment.heading)) {
+    return segmentToRichText(segment) as unknown as Record<string, unknown>
+  }
+  const text = (raw || '').trim()
+  if (text.length > 40 && !text.startsWith('{')) {
+    return lexicalFromText(text) as unknown as Record<string, unknown>
+  }
+  return null
 }
 
 /**
@@ -131,9 +135,20 @@ export const enrichAiBlocks = async (input: {
     })
 
     try {
-      const raw = await aiChat(promptText, { maxTokens: 1600 })
-      const segment = extractJson(raw)
-      const richText = segment ? segmentToRichText(segment) : null
+      let richText: null | Record<string, unknown> = null
+      // The local gateway occasionally returns empty/failed content under load;
+      // one retry recovers most blocked slots (a slot must not silently stay empty).
+      for (let attempt = 0; attempt < 2 && !richText; attempt += 1) {
+        try {
+          const raw = await aiChat(promptText, { maxTokens: 8192 })
+          richText = rawToRichText(raw)
+        } catch (err) {
+          if (attempt === 1) {
+            console.warn(`[generator] aiContent #${order} gagal:`, (err as Error)?.message)
+          }
+        }
+        if (!richText) await new Promise((r) => setTimeout(r, 700))
+      }
       if (richText && !isRichTextEmpty(richText)) {
         fields.generatedText = richText
         fields.model = model
@@ -141,7 +156,8 @@ export const enrichAiBlocks = async (input: {
         block.aiContentFields = fields
         enriched += 1
       }
-    } catch {
+    } catch (err) {
+      console.warn(`[generator] aiContent #${order} gagal:`, (err as Error)?.message)
       // AI failure → leave generatedText empty; renderer falls back to `content`.
     }
 

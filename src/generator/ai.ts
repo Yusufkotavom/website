@@ -17,7 +17,14 @@
 const AI_BASE = (process.env.AI_BASE_URL || 'http://localhost:20128/v1').replace(/\/$/, '')
 const AI_MODEL = process.env.AI_MODEL || 'pro-coding'
 const AI_KEY = process.env.AI_API_KEY || ''
-const AI_MAX_TOKENS = Number(process.env.AI_MAX_TOKENS || 4096)
+/**
+ * `pro-coding` (reasoning model) burns most of its token budget on
+ * `reasoning_content` before emitting `content`. Measured 2026-09-15: at
+ * max_tokens=2048 the reply hit `finish_reason:'length'` with a 6.3k-char
+ * reasoning trace and an EMPTY `content`; at 8192 it finished with real
+ * content. Keep the default generous.
+ */
+const AI_MAX_TOKENS = Number(process.env.AI_MAX_TOKENS || 8192)
 const AI_TIMEOUT_MS = Number(process.env.AI_TIMEOUT_MS || 90_000)
 
 export const aiConfigured = (): boolean => process.env.AI_ENABLED !== 'false' && Boolean(AI_MODEL)
