@@ -69,18 +69,21 @@ export const fetchPage = async (incomingSlugSegments: string[]): Promise<null | 
 
   const payload = await getPayload({ config })
   const slugSegments = incomingSlugSegments || ['home']
-  const slug = slugSegments.at(-1)
+  const fullPath = slugSegments.join('/')
+  const lastSegment = slugSegments.at(-1)
 
   const data = await payload.find({
     collection: 'pages',
     depth: 2,
     draft,
-    limit: 1,
+    limit: 5,
     where: {
       and: [
+        // Flat pages store only their last segment; generated pages store the
+        // full nested path (`percetakan/cetak-buku/bandung`). Match either.
         {
           slug: {
-            equals: slug,
+            in: [...new Set([lastSegment, fullPath])],
           },
         },
         ...(draft
@@ -96,7 +99,7 @@ export const fetchPage = async (incomingSlugSegments: string[]): Promise<null | 
     },
   })
 
-  const pagePath = `/${slugSegments.join('/')}`
+  const pagePath = `/${fullPath}`
 
   const page =
     data.docs.find(({ breadcrumbs }: Page) => {
