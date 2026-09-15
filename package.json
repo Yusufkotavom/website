@@ -12,6 +12,8 @@
     "sitemap": "next-sitemap --config ./next-sitemap.config.cjs",
     "start": "next start",
     "lint": "eslint .",
+    "test": "tsx --test src/generator/__tests__/*.test.ts",
+    "generator:run": "tsx scripts/generator-run.mjs",
     "prettier:fix": "prettier --write ."
   },
   "dependencies": {
@@ -75,6 +77,7 @@
     "dotenv": "^16.4.7",
     "eslint": "9.39.5",
     "prettier": "3.4.2",
+    "tsx": "4.23.1",
     "typescript": "5.7.3"
   },
   "pnpm": {

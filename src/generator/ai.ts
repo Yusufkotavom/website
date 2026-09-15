@@ -109,16 +109,16 @@ export const extractAiPrompts = (obj: unknown): string[] => {
   return [...found]
 }
 
-const replaceAiPrompts = (obj: unknown, replacements: Record<string, string>): unknown => {
+export const replacePromptsIn = (obj: unknown, replacements: Record<string, string>): unknown => {
   if (typeof obj === 'string') {
     return obj.replace(new RegExp(AIGEN.source, 'g'), (m, p: string) => replacements[p] || m)
   }
-  if (Array.isArray(obj)) return obj.map((item) => replaceAiPrompts(item, replacements))
+  if (Array.isArray(obj)) return obj.map((item) => replacePromptsIn(item, replacements))
   if (obj && typeof obj === 'object') {
     return Object.fromEntries(
       Object.entries(obj as Record<string, unknown>).map(([k, v]) => [
         k,
-        replaceAiPrompts(v, replacements),
+        replacePromptsIn(v, replacements),
       ]),
     )
   }
@@ -138,7 +138,7 @@ export const resolveShortcodes = async (draft: unknown): Promise<{ draft: unknow
       replacements[p] = p // leave the raw prompt text if the model failed
     }
   }
-  return { draft: replaceAiPrompts(draft, replacements), used: true }
+  return { draft: replacePromptsIn(draft, replacements), used: true }
 }
 
 export const aiInfo = () => ({ base: AI_BASE, configured: aiConfigured(), model: AI_MODEL })

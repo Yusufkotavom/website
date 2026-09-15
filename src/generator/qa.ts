@@ -20,7 +20,7 @@ const blocksOf = (draft: GeneratedDraft): Record<string, unknown>[] =>
 const hasEmptyAiBlock = (draft: GeneratedDraft): boolean =>
   blocksOf(draft).some((block) => {
     if (block?.blockType !== 'aiContent') return false
-    const fields = (block.aiFields ?? {}) as Record<string, unknown>
+    const fields = (block.aiContentFields ?? {}) as Record<string, unknown>
     return !fields.generatedText
   })
 
@@ -83,12 +83,42 @@ export const assessDraft = (input: {
   }
 
   const blocks = blocksOf(draft)
-  if (blocks.length < MIN_BLOCKS) {
+  if (blocks.length === 0) {
+    issues.push({
+      code: 'no-content',
+      message: 'Tidak ada blok konten (template kosong & AI off).',
+      severity: 'blocked',
+    })
+  } else if (blocks.length < MIN_BLOCKS) {
     issues.push({
       code: 'too-few-blocks',
       message: `Hanya ${blocks.length} blok.`,
       severity: 'warning',
     })
+  }
+
+  if (draft.entityType === 'post') {
+    if (!draft.category) {
+      issues.push({
+        code: 'post-missing-category',
+        message: 'Post tanpa kategori (wajib). Set defaultCategory di program.',
+        severity: 'blocked',
+      })
+    }
+    if (!draft.authors || (Array.isArray(draft.authors) && draft.authors.length === 0)) {
+      issues.push({
+        code: 'post-missing-authors',
+        message: 'Post tanpa author (wajib). Set defaultAuthors di program.',
+        severity: 'blocked',
+      })
+    }
+    if (!draft.image) {
+      issues.push({
+        code: 'post-missing-image',
+        message: 'Post tanpa gambar utama (wajib). Set defaultImage di program.',
+        severity: 'blocked',
+      })
+    }
   }
 
   if (draft.generator.aiUsed && hasEmptyAiBlock(draft)) {

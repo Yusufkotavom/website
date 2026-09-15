@@ -1,6 +1,7 @@
 import { normalizeSeoDescription, normalizeSeoTitle } from '@root/seo/normalize'
 
 import { planToBlocks, type ContentPlan } from './blocks'
+import { lexicalFromText } from './lexical'
 import { buildGeneratorSlug } from './slug'
 import { buildTokens, deepReplace } from './tokens'
 import type { GeneratedDraft, GeneratorProgramLite, GeneratorRow, GeneratorTemplateLite } from './types'
@@ -50,11 +51,28 @@ export const buildDraft = (input: BuildDraftInput): GeneratedDraft => {
     title: normalizeSeoTitle(rawTitle) || undefined,
   }
 
+  // Skeleton: prefer the template's own block stack (token-replaced, with any
+  // `aiContent` blocks already enriched by the runner); otherwise fall back to
+  // the AI content plan expanded into native blocks.
+  const templateBlocks = (template.layout ?? []) as Record<string, unknown>[]
+  const blocks: Record<string, unknown>[] = templateBlocks.length
+    ? (deepReplace(templateBlocks, tokens) as Record<string, unknown>[])
+    : plan
+      ? planToBlocks(plan, entityType)
+      : []
+
+  const aiUsed =
+    Boolean(plan) ||
+    templateBlocks.some((block) => {
+      const fields = (block.aiContentFields ?? {}) as Record<string, unknown>
+      return block.blockType === 'aiContent' && Boolean(fields.generatedText)
+    })
+
   const rowKey = row.key || slug
   const common = {
     _status: (program.outputStatus || 'draft') as 'draft' | 'published',
     generator: {
-      aiUsed: false,
+      aiUsed,
       ...(program.dataset ? { datasetId: program.dataset } : {}),
       generatedAt,
       keywordKey: row.primaryKeyword,
@@ -75,9 +93,11 @@ export const buildDraft = (input: BuildDraftInput): GeneratedDraft => {
       ...common,
       authors: program.defaultAuthors ?? undefined,
       category: program.defaultCategory ?? undefined,
-      content: plan ? planToBlocks(plan, 'post') : [],
+      content: blocks,
       entityType: 'post',
-      excerpt: (plan?.metaDescription || plan?.intro || '') as unknown as Record<string, unknown>,
+      excerpt: lexicalFromText(
+        plan?.intro || plan?.metaDescription || title,
+      ) as unknown as Record<string, unknown>,
       image: program.defaultImage ?? undefined,
       publishedOn: new Date().toISOString(),
     }
@@ -90,8 +110,9 @@ export const buildDraft = (input: BuildDraftInput): GeneratedDraft => {
 
   return {
     ...common,
+    breadcrumbs: [{ label: title, url: `/${slug}` }],
     entityType: 'page',
     hero,
-    layout: plan ? planToBlocks(plan, 'page') : [],
+    layout: blocks,
   }
 }

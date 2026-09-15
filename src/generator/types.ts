@@ -37,7 +37,7 @@ export type GeneratorTemplateLite = {
 }
 
 export type GeneratorProgramLite = {
-  aiMode?: 'generate' | 'off' | 'prepared' | null
+  aiMode?: 'dry' | 'generate' | 'off' | null
   dataset?: null | number | string
   defaultAuthors?: null | (number | string)[]
   defaultCategory?: null | number | string
@@ -46,7 +46,7 @@ export type GeneratorProgramLite = {
   id: number | string
   outputStatus?: 'draft' | 'published' | null
   routeBase?: null | string
-  writeMode?: 'overwrite' | 'skip' | null
+  writeMode?: 'create' | 'overwrite' | null
 }
 
 export type ExistingDoc = {
@@ -82,6 +82,7 @@ export type GeneratedBase = {
 }
 
 export type GeneratedPage = GeneratedBase & {
+  breadcrumbs?: { label: string; url: string }[]
   entityType: 'page'
   hero: Record<string, unknown>
   layout: Record<string, unknown>[]
