@@ -42,6 +42,11 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     const hasType = searchParams.has('type')
     const ogType = hasType ? searchParams.get('type') : 'home'
 
+    // Origin for absolute asset URLs (satori requires absolute). Build-time
+    // NEXT_PUBLIC_SITE_URL inlines as '' into the edge bundle on some builds,
+    // so fall back to the incoming request origin.
+    const origin = (process.env.NEXT_PUBLIC_SITE_URL || req.nextUrl.origin).replace(/\/$/, '')
+
     const ogTypeLabel: Record<string, string> = {
       home: 'Kotacom',
       page: 'Halaman',
@@ -81,7 +86,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
           )}
           <div
             style={{
-              backgroundImage: `url(${process.env.NEXT_PUBLIC_SITE_URL}/images/scanline-light.png)`,
+              backgroundImage: `url(${origin}/images/scanline-light.png)`,
               backgroundRepeat: 'repeat',
               bottom: 0,
               left: 0,
