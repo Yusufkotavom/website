@@ -77,7 +77,10 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
 
         try {
           const hubspotCookie = getCookie('hubspotutk')
-          const pageUri = `${process.env.NEXT_PUBLIC_SITE_URL}${pathname}`
+          // NEXT_PUBLIC_SITE_URL can be empty in client bundles; fall back to the
+          // live origin so pageUri is always absolute and `new URL()` never throws.
+          const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+          const pageUri = `${siteOrigin}${pathname}`
           const slugParts = pathname?.split('/')
           const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
           const req = await fetch('/api/form-submissions', {
@@ -116,10 +119,10 @@ const RenderForm = ({ form, hiddenFields }: { form: FormType; hiddenFields: stri
               return
             }
 
-            const redirectUrl = new URL(url, process.env.NEXT_PUBLIC_SITE_URL)
+            const redirectUrl = new URL(url, siteOrigin)
 
             try {
-              if (url.startsWith('/') || redirectUrl.origin === process.env.NEXT_PUBLIC_SITE_URL) {
+              if (url.startsWith('/') || redirectUrl.origin === siteOrigin) {
                 router.push(redirectUrl.href)
               } else {
                 window.location.assign(url)
