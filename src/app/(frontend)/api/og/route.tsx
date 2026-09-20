@@ -29,6 +29,15 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
           .then((buf) => `data:image/jpeg;base64,${Buffer.from(buf).toString('base64')}`)
       : null
 
+    // Scanline texture embedded as a data URL — never depends on the request
+    // origin (inside the container req.nextUrl.origin is 0.0.0.0:3000, which
+    // satori cannot fetch). Same pattern as the fonts above.
+    const scanlineDataUrl = await fetch(
+      new URL('../../../../../public/images/scanline-light.png', import.meta.url),
+    )
+      .then((res) => res.arrayBuffer())
+      .then((buf) => `data:image/png;base64,${Buffer.from(buf).toString('base64')}`)
+
     const { searchParams } = new URL(req.url)
     const untitledSansRegular = untitledSansRegularFont
     const untitledSansMedium = untitledSansMediumFont
@@ -41,11 +50,6 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
     const topic = hasTopic ? searchParams.get('topic')?.slice(0, 100).replace('-', ' ') : ''
     const hasType = searchParams.has('type')
     const ogType = hasType ? searchParams.get('type') : 'home'
-
-    // Origin for absolute asset URLs (satori requires absolute). Build-time
-    // NEXT_PUBLIC_SITE_URL inlines as '' into the edge bundle on some builds,
-    // so fall back to the incoming request origin.
-    const origin = (process.env.NEXT_PUBLIC_SITE_URL || req.nextUrl.origin).replace(/\/$/, '')
 
     const ogTypeLabel: Record<string, string> = {
       home: 'Kotacom',
@@ -86,7 +90,7 @@ export async function GET(req: NextRequest): Promise<ImageResponse> {
           )}
           <div
             style={{
-              backgroundImage: `url(${origin}/images/scanline-light.png)`,
+              backgroundImage: `url(${scanlineDataUrl})`,
               backgroundRepeat: 'repeat',
               bottom: 0,
               left: 0,
