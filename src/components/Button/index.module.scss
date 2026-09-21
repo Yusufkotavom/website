@@ -78,6 +78,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
     --animation-speed: 450ms;
     display: inline-flex;
     border: 1px solid var(--grid-line-dark);
+    border-radius: var(--kc-radius-sm);
     position: relative;
     padding: unset;
     color: var(--theme-elevation-1000);
@@ -200,15 +201,16 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   &--primary {
-    border: 1px solid var(--theme-elevation-900);
-    color: var(--theme-bg);
-    background-color: var(--theme-elevation-950);
+    border: 1px solid var(--kc-accent);
+    border-radius: var(--kc-radius-sm);
+    color: #fff;
+    background-color: var(--kc-accent);
 
     &:focus-visible,
     &:hover {
-      color: var(--theme-bg);
-      border-color: currentColor;
-      background-color: var(--theme-elevation-700);
+      color: #fff;
+      border-color: var(--kc-accent-strong);
+      background-color: var(--kc-accent-strong);
     }
   }
 

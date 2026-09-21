@@ -19,6 +19,19 @@ $fill: #000000;
 $fill-hover: rgba(255, 255, 255, 0.035);
 $mono: var(--font-geist-mono);
 
+/* brand accent (see src/css/brand.scss) — used sparingly to warm the mono base */
+$accent: var(--kc-accent);
+$accent-strong: var(--kc-accent-strong);
+$accent-weak: var(--kc-accent-weak);
+$warm: var(--kc-warm);
+$panel-2: var(--kc-panel-2);
+$panel-hover: var(--kc-panel-hover);
+$radius-sm: var(--kc-radius-sm);
+$radius: var(--kc-radius);
+$radius-pill: var(--kc-radius-pill);
+$shadow: var(--kc-shadow);
+$shadow-accent: var(--kc-shadow-accent);
+
 .page {
   position: relative;
   display: block;
@@ -99,7 +112,7 @@ $mono: var(--font-geist-mono);
 }
 
 .marker {
-  color: $ink;
+  color: $accent-strong;
   font-size: 0.75rem;
   line-height: 1;
 }
@@ -172,7 +185,7 @@ $mono: var(--font-geist-mono);
   max-width: 48ch;
   font-size: 1.0625rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .actions {
@@ -189,7 +202,7 @@ $mono: var(--font-geist-mono);
   align-items: center;
   gap: 0.5rem;
   padding: 0.8125rem 1.375rem;
-  border-radius: 0;
+  border-radius: $radius-sm;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: -0.005em;
@@ -198,17 +211,20 @@ $mono: var(--font-geist-mono);
   transition:
     background 150ms ease,
     color 150ms ease,
-    border-color 150ms ease;
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 
 .btnPrimary {
-  background: $ink;
-  color: #000;
-  border: 1px solid $ink;
+  background: $accent;
+  color: #fff;
+  border: 1px solid $accent;
+  box-shadow: $shadow-accent;
 
   &:hover {
-    background: transparent;
-    color: $ink;
+    background: $accent-strong;
+    border-color: $accent-strong;
+    color: #fff;
   }
 }
 
@@ -218,7 +234,7 @@ $mono: var(--font-geist-mono);
   border: 1px solid rgba(255, 255, 255, 0.26);
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.6);
+    border-color: $accent;
     background: $fill-hover;
   }
 }
@@ -552,8 +568,10 @@ $mono: var(--font-geist-mono);
     font-size: 0.625rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: $ink-3;
-    border: $hair;
+    color: $ink-2;
+    border: 1px solid rgba(0, 112, 243, 0.4);
+    border-radius: $radius-sm;
+    background: $accent-weak;
     padding: 0.25rem 0.5rem;
   }
 }
@@ -963,9 +981,9 @@ $mono: var(--font-geist-mono);
   transform: translateX(-50%);
   pointer-events: none;
   background:
-    radial-gradient(42% 52% at 50% 62%, rgba(0, 112, 243, 0.26) 0%, rgba(0, 112, 243, 0) 72%),
+    radial-gradient(42% 52% at 50% 62%, rgba(0, 112, 243, 0.28) 0%, rgba(0, 112, 243, 0) 72%),
     radial-gradient(30% 40% at 30% 58%, rgba(129, 140, 248, 0.16) 0%, rgba(129, 140, 248, 0) 70%),
-    radial-gradient(34% 44% at 72% 56%, rgba(56, 189, 248, 0.13) 0%, rgba(56, 189, 248, 0) 72%);
+    radial-gradient(34% 44% at 72% 56%, rgba(244, 172, 79, 0.12) 0%, rgba(244, 172, 79, 0) 70%);
 }
 
 .heroMarks {
@@ -1004,8 +1022,10 @@ $mono: var(--font-geist-mono);
 
 .consoleFrame {
   border: $hair;
-  background: #030303;
+  border-radius: $radius;
+  background: #050505;
   overflow: hidden;
+  box-shadow: $shadow;
 }
 
 .browserBar {
@@ -1021,6 +1041,7 @@ $mono: var(--font-geist-mono);
   width: 8px;
   height: 8px;
   border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
   flex: none;
 }
 
@@ -1031,6 +1052,7 @@ $mono: var(--font-geist-mono);
   margin-left: 0.75rem;
   padding: 0.25rem 0.625rem;
   border: $hair;
+  border-radius: $radius-pill;
   font-family: $mono;
   font-size: 0.6875rem;
   letter-spacing: 0.02em;
@@ -1289,13 +1311,13 @@ $mono: var(--font-geist-mono);
 /* ── service glyph ───────────────────────────────────────────────────────── */
 .svcGlyph {
   display: inline-flex;
-  color: $ink-3;
+  color: $accent;
   line-height: 0;
   transition: color 200ms ease;
 }
 
 .svc:hover .svcGlyph {
-  color: $ink;
+  color: $accent-strong;
 }
 
 .svcTop {
@@ -1357,7 +1379,7 @@ $mono: var(--font-geist-mono);
 
   img {
     object-fit: cover;
-    filter: grayscale(1) contrast(1.06) brightness(0.78);
+    filter: grayscale(0) contrast(1.03) saturate(1.03);
     transition:
       filter 520ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -1365,7 +1387,7 @@ $mono: var(--font-geist-mono);
 }
 
 .proj:hover .projShot img {
-  filter: grayscale(0.15) contrast(1.02) brightness(0.95);
+  filter: grayscale(0) contrast(1.05) saturate(1.1) brightness(1.03);
   transform: scale(1.035);
 }
 
@@ -1399,15 +1421,16 @@ $mono: var(--font-geist-mono);
 
   img {
     object-fit: cover;
-    filter: grayscale(1) contrast(1.05) brightness(0.8);
+    /* colour by default — printing is colour; grayscale is the hover reward */
+    filter: grayscale(0) contrast(1.02) saturate(1.02);
     transition:
       filter 560ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   &:hover img {
-    filter: grayscale(0) contrast(1) brightness(0.98);
-    transform: scale(1.04);
+    filter: grayscale(0) contrast(1.04) saturate(1.08) brightness(1.02);
+    transform: scale(1.035);
   }
 
   figcaption {

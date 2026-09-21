@@ -14,7 +14,9 @@ Desain ini bergaya **technical blueprint / gambar teknik**, bukan poster marketi
 
 - Grid **sengaja dibuat terlihat** (garis hairline vertikal).
 - Sudut **siku** (radius 0), label **mono**, motion **cepat & datar**.
-- Tujuannya terasa **presisi & transparan**, bukan "ramah & mewah".
+- Tujuannya terasa **presisi & transparan**, lalu **dihangatkan secukupnya**:
+  aksen brand, radius selektif pada elemen interaktif, dan fotografi berwarna —
+  karena bisnis ini setengah percetakan (warna, tinta, kertas).
 - Semua keputusan visual di bawah mengalir dari satu prinsip ini:
   **struktur dulu, dekorasi belakangan.**
 
@@ -68,16 +70,20 @@ Referensi: `src/components/BackgroundGrid/index.module.scss`.
 
 ---
 
-## 3. Radius — nyaris nol
+## 3. Radius — struktural 0, interaktif dilembutkan
 
-| Nilai | Pemakaian |
-|-------|-----------|
-| **0px** | **default** — card, panel, section, tombol, gambar |
-| 3–4px | hanya kontrol kecil (input, tombol doc/kbd) |
-| 8px | jarang |
-| 40px / 100% | pil avatar & tombol shortcut saja |
+| Elemen | Nilai |
+|--------|-------|
+| Panel, section, grid, kartu struktural | **0px** — siku, ortogonal |
+| **Tombol, chip/tag, input** | **4px** (`--kc-radius-sm`) |
+| **Mockup, kartu konten mengambang** | **8–12px** (`--kc-radius` / `--kc-radius-lg`) |
+| Pil (avatar, URL bar, badge bulat) | `999px` / `50%` |
 
-**Card, panel, section, gambar = `border-radius: 0`.** Siku, ortogonal.
+**Panel & gambar struktural tetap `border-radius: 0`.** Yang dilembutkan hanya
+permukaan **interaktif** (tombol, chip, mockup) supaya tidak terasa kaku — siku
+besar tetap jadi identitas. Shadows (`--kc-shadow`) hanya pada permukaan lesung.
+
+Referensi: `src/css/brand.scss` (`--kc-radius-*`).
 
 ---
 
@@ -91,9 +97,14 @@ Referensi: `src/components/BackgroundGrid/index.module.scss`.
 --color-{blue,purple,orange,red}-*  + pasangan -text/-bg/-border light|dark
 ```
 
-- **Tidak ada "brand blue" di CTA.** Tombol mayoritas **hitam/putih**
-  (`rgb(0,0,0)` + teks putih, atau transparan + border, radius 0).
-- Palet warna hanya untuk **semantik** (callout, status, badge), bukan dekorasi.
+- **Aksen brand = `--kc-accent` (`#0070F3`), dipakai hemat & terarah.** Tombol
+  primer, link hover, chip/tag, glyph, penanda. Bukan sebagai *wash*/latar besar.
+  Tombol sekunder tetap mono (transparan + border).
+- **Warna = pembawa makna dua pilar:** `--kc-accent` (biru) → **IT/digital**,
+  `--kc-warm` (amber) → **percetakan**. Palet semantik (`--color-*`) tetap untuk
+  status/callout, bukan dekorasi.
+- Tema light = **kertas hangat** (`--kc-paper`), bukan putih klinis.
+- Referensi: `src/css/brand.scss`.
 - Tema light/dark lewat `[data-theme]` → `--theme-elevation-0…1000` memetakan ke
   `--color-base-*`. Base = **`#000`**.
 - Utilitas teks redup: `--text-dark / --text-light = rgba(0|255, …, 0.5)`.
@@ -147,7 +158,8 @@ Referensi: `src/css/app.scss`.
 **Selalu (DO):**
 1. Mulai dari **grid 16 (desktop) / 8 (mobile)** — tentukan `cols-N start-N` dulu.
 2. Border **1px `rgba(0,0,0|255,255,255,0.125)`**; `2px` untuk aturan tebal.
-   **Radius 0** untuk card/panel/tombol/gambar.
+   **Radius 0** untuk panel/grid/section; **4px** pada tombol/chip/input; **8–12px**
+   pada mockup & kartu mengambang (lihat §3).
 3. Heading **untitledSans 500**, tracking `≈ -0.05em`, `line-height: 1`.
 4. Label/metadata **GeistMono** (uppercase untuk eyebrow/tag).
 5. Warna **hanya dari token** `--color-base-*` / semantik. Base = `#000`.
@@ -159,12 +171,13 @@ Referensi: `src/css/app.scss`.
 - ❌ Box-shadow / glow / glassmorphism / gradient dekoratif pada sistem dasar.
 - ❌ Radius besar pada panel/kartu.
 - ❌ Heading bold 700 atau letter-spacing normal.
-- ❌ Warna brand acak di CTA (tetap mono hitam/putih).
+- ❌ Warna brand sebagai *wash*/latar besar (aksen `--kc-accent` hanya terarah).
 - ❌ `gap` pada grid (biarkan 0; jarak dari border/kolom).
 
 > **Pengecualian:** aksen grafis yang *tetap ortogonal & Geist-compatible*
-> (grid overlay, marquee hairline, count-up, foto grayscale→warna saat hover)
-> diperbolehkan — selama tidak melanggar poin 1–8.
+> (grid overlay, marquee hairline, count-up, foto berwarna) diperbolehkan —
+> selama tidak melanggar poin 1–8. **Foto tampil berwarna secara default**
+> (grayscale hanya sebagai efek hover) karena warna adalah produk percetakan.
 
 ---
 

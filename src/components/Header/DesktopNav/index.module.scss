@@ -324,7 +324,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 
   &:hover {
     transition: all var(--trans-default) $curve;
-    opacity: 0.8;
+    color: var(--kc-accent);
   }
 }
 
@@ -341,7 +341,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 
   &:hover {
     transition: all var(--trans-default) $curve;
-    opacity: 0.8;
+    color: var(--kc-accent);
   }
 }
 
