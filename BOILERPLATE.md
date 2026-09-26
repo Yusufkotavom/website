@@ -1,5 +1,9 @@
 # Kotacom — Boilerplate Foundation
 
+> **Project type: AI / tech-stack.** Baca **[`PROJECT.md`](./PROJECT.md)** dulu — itu dossier
+> teknis utama. Dokumen ini memetakan fondasi spesifik untuk lingkup situs (migrasi konten
+> `kotacom.id` → 301, programmatic content).
+
 Status: **boilerplate** (bukan migrasi resmi). Konten masih placement/dummy.
 Tujuan dokumen ini: peta fondasi yang sudah siap, supaya sesi/pekerjaan berikutnya
 (migrasi `kotacom.id` → 301, programmatic content) tinggal menumpang.

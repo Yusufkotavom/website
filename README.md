@@ -1,104 +1,131 @@
-# Payload Website
+# Kotacom AI Content Platform
 
-This is the repository for [Payload's official website](https://payloadcms.com/). It was built completely in public using Payload itself, [more on that here](#⭐-the-cms).
+Self-hosted **content + SEO platform** built on **Payload CMS 3 + Next.js 16**, with a
+purpose-built **AI content generator** and an **MCP server** so AI agents can operate the
+whole CMS. Runs entirely on a single Oracle VPS (Dokploy / Docker Swarm + MongoDB) —
+**no Vercel or third-party cloud**.
 
-<img src="https://payloadcms.com/images/og-image.jpg" alt="Payload headless CMS website" />
+> **Positioning:** this is an **AI / tech-stack project**. The content domain is a printing
+> + IT business, but the engineering focus is *agentic content generation*, *self-hosted
+> CMS infrastructure*, and *programmatic SEO at scale*.
 
-This site showcases lots of cool stuff like how to use Next.js 15 + Payload's local API to its fullest extent, how to build a super dynamic light / dark mode into a Next site without any first-load flickering, how to render remotely stored docs from MDX to Next.js pages using just Payload (no external libraries), how to use Stripe to build a custom SaaS integration, and much more.
+Fork of [`payloadcms/website`](https://github.com/payloadcms/website) (MIT) →
+`Yusufkotavom/website`. Live: `https://payload.kotacom.id`.
+Full dossier: **[`PROJECT.md`](./PROJECT.md)**.
 
-## ✨ Tech stack
+---
 
-- [Payload](https://github.com/payloadcms/payload) (obviously)
-- TypeScript
-- Next.js 15 and its new App Router
-- SCSS Modules
-- MDX for docs, using the [Lexical MDX Converter](https://payloadcms.com/docs/rich-text/converting-markdown#converting-mdx)
-- GraphQL for Payload Cloud
-- Stripe for Payload Cloud
+## ✨ Highlights
 
-## ⭐ The CMS
+- 🤖 **AI content generator** (`src/generator/*`) — turns a *program* (topic × city × …)
+  into structured Payload **pages & posts**: plan → draft → block materialisation, with QA,
+  slug building, dedupe, and overwrite-aware runs. Powered by a local OpenAI-compatible
+  gateway (reasoning model `pro-coding`).
+- 🧩 **32 Payload blocks**, incl. an `AiContent` renderer and a `WhatsAppCTA` (lead-gen).
+- 🔌 **MCP server** — `@payloadcms/plugin-mcp` exposes the CMS at `/api/mcp`, so agents can
+  CRUD content without the admin UI.
+- 🔎 **SEO foundation** — dynamic `sitemap.ts`, per-route `generateMetadata` + canonical
+  URLs, JSON-LD (Organization / WebSite / LocalBusiness / Article / Product / FAQ /
+  BreadcrumbList), flat post URLs with category 308-redirects, and an RSS feed.
+- 🏗 **Self-hosted infra** — Dokploy (Swarm) + Traefik + MongoDB 7, persistent media
+  volume, nightly backups. `DATABASE_URI` is only needed at *runtime* (force-dynamic pages).
+- 🎨 **Design system** — SCSS modules + CSS custom properties; a hairline/minimal base
+  warmed by a brand-accent layer. Contract in **[`DESIGN.md`](./DESIGN.md)**.
 
-[Payload](https://github.com/payloadcms/payload) is leveraged for everything that this site does, outside of its documentation which is all stored as Markdown in the Payload repo on GitHub. Both the CMS and the website frontend are found within the same app folder.
+## 🧱 Tech stack
 
-## ☁️ Payload Cloud
+| Layer | Choice |
+|---|---|
+| Framework | Next.js **16.3.3** (App Router), React **19.2.3** |
+| CMS | **Payload 3.88** (self-hosted, in the same app) |
+| Database | **MongoDB 7** (`@payloadcms/db-mongodb`) |
+| Language | TypeScript, `tsx` |
+| Styling | **SCSS Modules** + CSS custom properties (`src/css/*.scss`) |
+| AI | Local OpenAI-compatible gateway (9router), model **`pro-coding`**, `stream:false`, `max_tokens: 8192` |
+| Agent surface | `@payloadcms/plugin-mcp` (`/api/mcp`) |
+| Deploy | Docker Swarm (**Dokploy**) + **Traefik**, Oracle Cloud VPS |
+| Tests | `node:test` via `tsx` (`npm test`) |
 
-This repo contains the source code for [Payload Cloud](https://payloadcms.com/cloud-pricing). This is a one-click integration to deploy production-ready instances of your Payload apps directly from your GitHub repo, [read the blog post](https://payloadcms.com/blog/launch-week-day-1-payload-cloud-is-here) to get all the details. The entire frontend of Payload Cloud has been built in public and is included within this repo 😱.
+## 🗂 Project map
 
-## 🚀 Running the project locally
-
-To get started with this repo locally, follow the steps below:
-
-- Clone the repo
-- `pnpm i`
-- Run `cp .env.example .env` to create an `.env` file
-- Fill out the values within your new `.env`, corresponding to your own environment
-- Run `pnpm dev`
-- Bam
-
-### Hosts file
-
-The locally running app must run on `local.payloadcms.com:3000` because of http-only cookie policies and how the GitHub App redirects the user back to the site after authenticating. To do this, you'll need to add the following to your hosts file:
-
-```env
-127.0.0.1 local.payloadcms.com
+```
+src/
+  generator/      AI engine: ai, plan, enrich, render, run, qa, select, slug,
+                  tokens, dedupe, lexical, blocks, types  (+ __tests__)
+  collections/    Pages, Posts, Products, CaseStudies, Categories, Media, Users,
+                  ReusableContent + Generator{Templates,Datasets,Programs,Runs}
+  blocks/         32 content blocks (AiContent, WhatsAppCTA, Pricing, Steps, …)
+  app/(frontend)/  public site: (pages)/[…slug], posts, produk, case-studies,
+                   api/generator/run, api/og, sitemap, robots, rss
+  app/(payload)/   Payload admin (/admin) + MCP (/api/mcp)
+  components/      KotacomHome, Header, Footer, Button, cards, Hero, …
+  css/             design tokens: grid, type, colors, theme, brand
+scripts/          generator-{run.mjs,seed.ts,recon.ts,ai-probe.ts}
 ```
 
-> On Mac you can find the hosts file at `/etc/hosts`. On Windows, it's at `C:\Windows\System32\drivers\etc\hosts`:
+## 🚀 Getting started
 
-### Documentation
-
-The documentation for this site is stored in the [Payload repo](https://github.com/payloadcms/payload) as Markdown files. These are fetched when you press the "Sync Docs" button in the CMS. Pressing that button does the following:
-
-1. Docs are pulled from the Payload repo on GitHub.
-2. The docs are converted from MDX to Lexical and stored in the CMS.
-3. The frontend docs pages are revalidated.
-4. Visiting the docs pages will pull the latest docs from the CMS, and render those lexical nodes to JSX.
-
-#### Working on the docs locally - GitHub
-
-By default, the docs are pulled from the `main` branch of the Payload repo on GitHub. You can **load the docs** for a different branch by opening the /docs/dynamic/ route on the website. This will dynamically load them every time you visit the page, without needing to sync them in the CMS.
-
-Example:
-
-- This pulls from the main branch: https://payloadcms.com/docs/getting-started/concepts
-- This pulls from the feat/myfeature branch: https://payloadcms.com/docs/dynamic/getting-started/concepts?branch=feat/myfeature
-
-In order to edit docs for that branch without touching markdown files, you can use the branch selector in the CMS to select the branch you want to work on. After making changes and saving the document, the lexical docs will be converted to MDX and pushed to the selected branch on GitHub.
-
-You will need to set the following environment variables to work with the GitHub sync:
-
-```env
-// .env
-# For reading from GitHub
-GITHUB_ACCESS_TOKEN=ghp_
-GITHUB_CLIENT_SECRET=
-# For writing to GitHub - you can run the https://github.com/payloadcms/gh-commit repo locally
-COMMIT_DOCS_API_URL=
-COMMIT_DOCS_API_KEY=
+```bash
+pnpm i
+cp .env.example .env          # fill values
+pnpm dev                      # dev server — port 3001 on this box, never :3000
 ```
 
-#### Working on docs locally - local markdown files
+Useful scripts:
 
-If you have the docs stored locally as markdown files and would like to preview them in the website, you can use the /docs/local/ route in the website. First, you need to set the `DOCS_DIR_V3` environment variable to point to your local `docs` directory.
-
-```env
-// .env
-DOCS_DIR_V3=/documents/github/payload/docs
+```bash
+pnpm dev            # next dev --webpack
+pnpm build          # production build (no DB needed at build time)
+pnpm start          # serve the build
+pnpm test           # node:test suite
+pnpm generate:types # regenerate Payload types after schema changes
+pnpm generator:run  # run an AI generator program from the CLI
 ```
 
-Then, just open the `/docs/local/` route: http://localhost:3000/docs/local/getting-started/concepts.
+> **Port:** the dev server must stay on **:3001** — host `:3000` is owned by the Dokploy
+> dashboard (a collision crash-loops the Swarm service and takes every site down).
 
-Every time you make a change to the markdown files, just reload the page to see the changes reflected. The local MDX files are read, automatically converted to lexical on-the-fly, and rendered in the website. This process will not make any changes to the database.
+## 🤖 AI generator — quick start
 
-#### Beta and Legacy environment flags
+`POST /api/generator/run` (admin cookie or `Authorization: Bearer …`):
 
-You can also specify a `beta` version and `legacy` version to render different versions of the docs:
+```jsonc
+{ "programId": "<id>", "mode": "generate" }   // mode: dry | generate | off
+```
 
-- Set the environment variable `NEXT_PUBLIC_ENABLE_BETA_DOCS` to `true` to enable the beta docs.
-- Specify a branch, commit, or tag with `NEXT_PUBLIC_BETA_DOCS_REF`. The default for the beta docs is `beta`.
-- Set the environment variable `NEXT_PUBLIC_ENABLE_LEGACY_DOCS` to `true` to enable the legacy docs.
-- Specify a branch, commit, or tag with `NEXT_PUBLIC_LEGACY_DOCS_REF`. The default for the legacy docs is `null`, and will fallback to the `main` branch.
+The generator resolves a **program** (template + dataset + route base), builds tokens per
+row (e.g. `{layanan}` × `{lokasi}`), asks the model for a plan + enriched blocks, and writes
+`pages` / `posts` with a lineage field. Adding content is **AI-operable end-to-end**: create
+template/dataset/program via the REST API, then call this endpoint — no admin UI required.
 
-### License
+See `src/generator/ai.ts` for the model contract (reasoning-model quirks: generous
+`max_tokens`, keep only `content`, handle SSE).
 
-The Payload website is available as open source under the terms of the [MIT license](https://github.com/payloadcms/website/blob/main/LICENSE).
+## 🔑 Environment (names only — values are never committed)
+
+| Var | Purpose |
+|---|---|
+| `DATABASE_URI` | MongoDB connection (runtime) |
+| `PAYLOAD_SECRET` | Payload auth secret |
+| `NEXT_PUBLIC_SITE_URL` | Canonical origin (inlined at **build** as an ARG) |
+| `GENERATOR_SECRET` | Shared secret for the generator endpoint |
+| `AI_BASE_URL` / `AI_MODEL` / `AI_API_KEY` / `AI_MAX_TOKENS` | AI gateway |
+
+## 📚 Docs
+
+| Doc | What |
+|---|---|
+| **[`PROJECT.md`](./PROJECT.md)** | Full project dossier (architecture, AI engine, SEO, ops) |
+| [`DESIGN.md`](./DESIGN.md) | UI/design contract (grid, color, radius, type) |
+| [`INFRA.md`](./INFRA.md) | Production infrastructure & runbooks (self-hosted) |
+| [`BOILERPLATE.md`](./BOILERPLATE.md) | Foundation map for the original site scope |
+
+## 📄 License
+
+Fork of the Payload website, available as open source under the terms of the
+[MIT license](https://github.com/payloadcms/website/blob/main/LICENSE). This fork's own
+work (AI generator, SEO layer, self-hosted infra) is © Kotacom.
+
+---
+
+Built by **Kotacom** · `Yusuf Bahtiyar <yusuf@kotacom.id>`.
